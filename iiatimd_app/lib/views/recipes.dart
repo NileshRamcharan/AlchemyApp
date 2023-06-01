@@ -64,7 +64,7 @@ class _RecipePageState extends State<RecipePage> {
     if (isLoading) return;
     isLoading = true;
 
-    const limit = 25;
+    const limit = 10;
     final url = Uri.parse(
         'https://jsonplaceholder.typicode.com/posts?_limit=$limit&_page=$page');
     final response = await http.get(url);
@@ -128,10 +128,59 @@ class _RecipePageState extends State<RecipePage> {
                           height: screenHeight / 6,
                           child: Container(
                             decoration: const BoxDecoration(
-                              color: Color(0xFFE1DBBF),
+                              color: Color(0xffF2EBC9),
                             ),
-                            child: ListTile(
-                              title: Text(item),
+                            child: Row(
+                              children: [
+                                Container(
+                                  width: 110,
+                                  // color: Colors.red,
+
+                                  child: Center(
+                                    child: Container(
+                                      width: 90,
+                                      height: 90,
+                                      color: Color(0xffE1DBBF),
+                                    ),
+                                  ),
+                                ),
+                                Container(
+                                  width: screenWidth - 128,
+                                  // color: Colors.blue,
+                                  child: Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Text(item),
+                                        ],
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          Container(
+                                            width: 50,
+                                            height: 50,
+                                            color: Color(0xffE1DBBF),
+                                          ),
+                                          Container(
+                                            width: 50,
+                                            height: 50,
+                                            color: Color(0xffE1DBBF),
+                                          ),
+                                          Container(
+                                            width: 50,
+                                            height: 50,
+                                            color: Color(0xffE1DBBF),
+                                          )
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ),
