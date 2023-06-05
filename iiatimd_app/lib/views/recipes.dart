@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -36,6 +37,7 @@ class RecipePage extends StatefulWidget {
 class _RecipePageState extends State<RecipePage> {
   final controller = ScrollController();
   List<String> items = [];
+  List<bool> addFavorite = [];
   bool hasMore = true;
   int page = 1;
   bool isLoading = false;
@@ -82,7 +84,7 @@ class _RecipePageState extends State<RecipePage> {
         items.addAll(newItems.map<String>((item) {
           final number = item['id'];
 
-          return 'Item $number';
+          return 'Potion of\nRegenerate Stamina';
         }).toList());
       });
     }
@@ -120,6 +122,7 @@ class _RecipePageState extends State<RecipePage> {
                   itemBuilder: (context, index) {
                     if (index < items.length) {
                       final item = items[index];
+                      addFavorite.add(false);
 
                       return Padding(
                         padding: const EdgeInsets.only(top: 10.0),
@@ -153,7 +156,31 @@ class _RecipePageState extends State<RecipePage> {
                                     children: [
                                       Row(
                                         children: [
-                                          Text(item),
+                                          Padding(
+                                            padding:
+                                                const EdgeInsets.only(left: 28),
+                                            child: Text(
+                                              item,
+                                            ),
+                                          ),
+                                          const Spacer(),
+                                          IconButton(
+                                            icon: addFavorite.elementAt(index)
+                                                ? const Icon(
+                                                    Icons.star,
+                                                  )
+                                                : const Icon(
+                                                    Icons.star_border_outlined,
+                                                  ),
+                                            onPressed: () {
+                                              setState(() {
+                                                addFavorite[index] =
+                                                    !addFavorite
+                                                        .elementAt(index);
+                                              });
+                                              print(addFavorite);
+                                            },
+                                          ),
                                         ],
                                       ),
                                       Row(
