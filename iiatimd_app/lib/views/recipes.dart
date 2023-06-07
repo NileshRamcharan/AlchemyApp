@@ -41,6 +41,7 @@ class _RecipePageState extends State<RecipePage> {
   int page = 1;
   bool isLoading = false;
 
+  //infinite scroll controller
   @override
   void initState() {
     super.initState();
@@ -83,7 +84,7 @@ class _RecipePageState extends State<RecipePage> {
         items.addAll(newItems.map<String>((item) {
           final number = item['id'];
 
-          return 'Potion of\nRegenerate Stamina';
+          return 'Potion of Regenerate Stamina';
         }).toList());
       });
     }
@@ -134,10 +135,8 @@ class _RecipePageState extends State<RecipePage> {
                             ),
                             child: Row(
                               children: [
-                                Container(
+                                SizedBox(
                                   width: 110,
-                                  // color: Colors.red,
-
                                   child: Center(
                                     child: Container(
                                       width: 90,
@@ -148,39 +147,42 @@ class _RecipePageState extends State<RecipePage> {
                                 ),
                                 Container(
                                   width: screenWidth - 128,
-                                  // color: Colors.blue,
                                   child: Column(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceEvenly,
                                     children: [
-                                      Row(
-                                        children: [
-                                          Padding(
-                                            padding:
-                                                const EdgeInsets.only(left: 28),
-                                            child: Text(
-                                              item,
+                                      Padding(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            30, 0, 0, 0),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceAround,
+                                          children: [
+                                            Flexible(
+                                              child: Text(
+                                                item,
+                                              ),
                                             ),
-                                          ),
-                                          const Spacer(),
-                                          IconButton(
-                                            icon: addFavorite.elementAt(index)
-                                                ? const Icon(
-                                                    Icons.star,
-                                                  )
-                                                : const Icon(
-                                                    Icons.star_border_outlined,
-                                                  ),
-                                            onPressed: () {
-                                              setState(() {
-                                                addFavorite[index] =
-                                                    !addFavorite
-                                                        .elementAt(index);
-                                              });
-                                              print(addFavorite);
-                                            },
-                                          ),
-                                        ],
+                                            IconButton(
+                                              icon: addFavorite.elementAt(index)
+                                                  ? const Icon(
+                                                      Icons.star,
+                                                    )
+                                                  : const Icon(
+                                                      Icons
+                                                          .star_border_outlined,
+                                                    ),
+                                              onPressed: () {
+                                                setState(() {
+                                                  addFavorite[index] =
+                                                      !addFavorite
+                                                          .elementAt(index);
+                                                });
+                                                //print(addFavorite);
+                                              },
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                       Row(
                                         mainAxisAlignment:
