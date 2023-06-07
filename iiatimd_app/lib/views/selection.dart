@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:iiatimd_app/main.dart';
 
 void main() {
   runApp(const MyApp());
@@ -74,7 +73,6 @@ class _ActiveCardsState extends State<ActiveCards> {
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
-    double screenHeight = MediaQuery.of(context).size.height;
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(5, 0, 5, 5),
@@ -90,7 +88,7 @@ class _ActiveCardsState extends State<ActiveCards> {
                 width: 75,
                 height: 75,
                 color: Colors.blue,
-                child: Icon(Icons.add_circle_outline_outlined)),
+                child: const Icon(Icons.add_circle_outline_outlined)),
             Column(
               children: [
                 Container(
@@ -147,7 +145,15 @@ class _ActiveCardsState extends State<ActiveCards> {
                     ),
                   ),
                 ),
-                const Text('Extra info', style: TextStyle(color: Colors.white))
+                SizedBox(
+                  width: screenWidth - 130,
+                  child: const Flexible(
+                    child: Text(
+                      'Collected from dead Hagravens and scattered around their sleeping areas.',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ),
               ],
             ),
           ],

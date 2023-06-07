@@ -82,7 +82,7 @@ class _RecipePageState extends State<RecipePage> {
           hasMore = false;
         }
         items.addAll(newItems.map<String>((item) {
-          final number = item['id'];
+          //final number = item['id'];
 
           return 'Potion of Regenerate Stamina';
         }).toList());
@@ -141,11 +141,11 @@ class _RecipePageState extends State<RecipePage> {
                                     child: Container(
                                       width: 90,
                                       height: 90,
-                                      color: Color(0xffE1DBBF),
+                                      color: const Color(0xffE1DBBF),
                                     ),
                                   ),
                                 ),
-                                Container(
+                                SizedBox(
                                   width: screenWidth - 128,
                                   child: Column(
                                     mainAxisAlignment:
@@ -191,17 +191,17 @@ class _RecipePageState extends State<RecipePage> {
                                           Container(
                                             width: 50,
                                             height: 50,
-                                            color: Color(0xffE1DBBF),
+                                            color: const Color(0xffE1DBBF),
                                           ),
                                           Container(
                                             width: 50,
                                             height: 50,
-                                            color: Color(0xffE1DBBF),
+                                            color: const Color(0xffE1DBBF),
                                           ),
                                           Container(
                                             width: 50,
                                             height: 50,
-                                            color: Color(0xffE1DBBF),
+                                            color: const Color(0xffE1DBBF),
                                           )
                                         ],
                                       ),
