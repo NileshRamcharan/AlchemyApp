@@ -9,7 +9,7 @@ class CraftingView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Text(ingredients.toString()),
+        child: Text(ingredients["monsters"][0]['effect1'].toString()),
       ),
     );
   }

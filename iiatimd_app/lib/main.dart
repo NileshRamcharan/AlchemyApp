@@ -61,7 +61,7 @@ class _InitPageState extends State<InitPage> {
                     PageView(
                       controller: info_controller,
                       children: [
-                        IngredientView(),
+                        IngredientView(ingredients: snapshot.data!.ingredients),
                         CraftingView(ingredients: snapshot.data!.ingredients,)
                       ]
                     )

@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 
 class IngredientView extends StatelessWidget {
-  const IngredientView({super.key});
+  const IngredientView({super.key, required this.ingredients});
+
+  final Map ingredients;
+
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       body: Center(
         //test column om real applicatie van card te zien zonder api
         child: Column(
           children: [
             Text("data"),
-            FilterContainer()
+            FilterContainer(ingredients: ingredients)
           ],
         ),
       )
@@ -169,7 +172,9 @@ class ListChoice extends StatelessWidget {
 }
 
 class FilterContainer extends StatefulWidget {
-  const FilterContainer({super.key});
+  const FilterContainer({super.key, required this.ingredients});
+
+  final Map ingredients;
 
   @override
   State<FilterContainer> createState() => _FilterContainerState();
