@@ -63,9 +63,9 @@
     },
     {
       "name": "http",
-      "rootUri": "file:///C:/Users/niles/AppData/Local/Pub/Cache/hosted/pub.dev/http-0.13.6",
+      "rootUri": "file:///C:/Users/niles/AppData/Local/Pub/Cache/hosted/pub.dev/http-1.0.0",
       "packageUri": "lib/",
-      "languageVersion": "2.19"
+      "languageVersion": "3.0"
     },
     {
       "name": "http_parser",
@@ -170,7 +170,7 @@
       "languageVersion": "3.0"
     }
   ],
-  "generated": "2023-06-01T14:18:47.293113Z",
+  "generated": "2023-06-14T12:40:39.639510Z",
   "generator": "pub",
   "generatorVersion": "3.0.1"
 }
