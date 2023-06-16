@@ -6,6 +6,8 @@ import 'package:iiatimd_app/views/crafting.dart';
 import 'package:iiatimd_app/views/ingredients.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:iiatimd_app/views/recipes.dart';
+import 'package:iiatimd_app/views/selection.dart';
 
 void main() {
   runApp(const AlchemyApp());
@@ -17,7 +19,7 @@ class AlchemyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Cat Facts Test',
+      title: 'AlchemyApp',
       theme: ThemeData(
         primarySwatch: Colors.yellow,
       ),
@@ -61,8 +63,9 @@ class _InitPageState extends State<InitPage> {
                     PageView(
                       controller: info_controller,
                       children: [
-                        IngredientView(ingredients: snapshot.data!.ingredients),
-                        CraftingView(ingredients: snapshot.data!.ingredients,)
+                        SelectionPage(ingredients: snapshot.data!.ingredients),
+                        CraftingView(ingredients: snapshot.data!.ingredients),
+                        RecipePage(title: "recipe")
                       ]
                     )
                   );

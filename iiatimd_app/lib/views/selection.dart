@@ -1,35 +1,26 @@
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-        title: 'SelectionView',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          useMaterial3: true,
-        ),
-        home: const SelectionPage(title: 'Flutter Selection Page'));
-  }
-}
-
 class SelectionPage extends StatelessWidget {
-  const SelectionPage({super.key, required this.title});
+  const SelectionPage({super.key, required this.ingredients});
 
-  final String title;
+  final Map ingredients;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Recipes (infinitescroll)'),
       ),
-      body: const SelectedCards(),
+      body: SizedBox(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        child: Column(
+          children: [
+            const SelectedCards(),
+            FilterContainer(ingredients: ingredients)
+          ],
+        ),
+      )
       //filter
       //ingredients
     );
@@ -49,27 +40,36 @@ class _SelectedCards extends State<SelectedCards> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-        itemCount: 3, //list.length
-        itemBuilder: (context, index) {
-          if (index < 3) {
-            //if index = list.length
-            return const ActiveCards();
-          } else {
-            return const AddIngredientCard();
-          }
-        });
+    return SizedBox(
+      width: MediaQuery.of(context).size.width,
+      height: 330,
+
+      child: ListView.builder(
+          itemCount: 3, //list.length
+          itemBuilder: (context, index) {
+            if (index < 3) {
+              //if index = list.length
+              return ActiveCards(name: "Abecaen longfin", effect1: "Weakness to frost", effect2: "Fortify sneak", effect3: "Weakness to poison", effect4: "Fortify restoration", location: "Collected by catching Abacean Longfin fish.");
+            } else {
+              return const AddIngredientCard();
+            }
+          }),
+    );
   }
 }
 
-class ActiveCards extends StatefulWidget {
-  const ActiveCards({super.key});
+class ActiveCards extends StatelessWidget {
+  const ActiveCards({super.key, required this.name, required this.effect1, required this.effect2, required this.effect3, required this.effect4, required this.location});
 
-  @override
-  State<ActiveCards> createState() => _ActiveCardsState();
-}
+  final String name;
 
-class _ActiveCardsState extends State<ActiveCards> {
+  final String effect1;
+  final String effect2;
+  final String effect3;
+  final String effect4;
+
+  final String location;
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -93,9 +93,9 @@ class _ActiveCardsState extends State<ActiveCards> {
               children: [
                 Container(
                     padding: const EdgeInsets.fromLTRB(5, 0, 5, 5),
-                    child: const Text(
-                      'ingredient name', //list.item.title
-                      style: TextStyle(
+                    child: Text(
+                      name, //list.item.title
+                      style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                           color: Colors.white),
@@ -104,22 +104,22 @@ class _ActiveCardsState extends State<ActiveCards> {
                   padding: const EdgeInsets.all(10.0),
                   child: SizedBox(
                     width: screenWidth - 130,
-                    child: const Column(
+                    child: Column(
                       children: [
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: <Widget>[
                             Flexible(
                               child: Text(
-                                  '  component 1', //list.item.title.component[0]
+                                  effect1, //list.item.title.component[0]
                                   textAlign: TextAlign.center,
-                                  style: TextStyle(color: Colors.white)),
+                                  style: const TextStyle(color: Colors.white)),
                             ),
                             Flexible(
                               child: Text(
-                                  'component 2', //list.item.title.component[1]
+                                  effect2, //list.item.title.component[1]
                                   textAlign: TextAlign.center,
-                                  style: TextStyle(color: Colors.white)),
+                                  style: const TextStyle(color: Colors.white)),
                             )
                           ],
                         ),
@@ -128,16 +128,16 @@ class _ActiveCardsState extends State<ActiveCards> {
                           children: <Widget>[
                             Flexible(
                               child: Text(
-                                'longer component 3', //list.item.title.component[2]
+                                effect3, //list.item.title.component[2]
                                 textAlign: TextAlign.center,
-                                style: TextStyle(color: Colors.white),
+                                style: const TextStyle(color: Colors.white),
                               ),
                             ),
                             Flexible(
                               child: Text(
-                                  'super long  component 4', //list.item.title.component[3]
+                                  effect4, //list.item.title.component[3]
                                   textAlign: TextAlign.center,
-                                  style: TextStyle(color: Colors.white)),
+                                  style: const TextStyle(color: Colors.white)),
                             )
                           ],
                         ),
@@ -147,10 +147,10 @@ class _ActiveCardsState extends State<ActiveCards> {
                 ),
                 SizedBox(
                   width: screenWidth - 130,
-                  child: const Flexible(
+                  child: Flexible(
                     child: Text(
-                      'Collected from dead Hagravens and scattered around their sleeping areas.',
-                      style: TextStyle(color: Colors.white),
+                      location,
+                      style: const TextStyle(color: Colors.white),
                     ),
                   ),
                 ),
@@ -195,6 +195,95 @@ class AddIngredientCard extends StatelessWidget {
           )
         ]),
       ),
+    );
+  }
+}
+
+
+class Filter extends StatelessWidget {
+  const Filter({super.key, required this.state, required this.onChangeState});
+
+  final String state;
+  final Function(String) onChangeState;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        FilterButton(name: "Mushrooms", onChangeState: onChangeState),
+        FilterButton(name: "Plants", onChangeState: onChangeState),
+        FilterButton(name: "Monsters", onChangeState: onChangeState),
+        FilterButton(name: "Animals", onChangeState: onChangeState),
+        FilterButton(name: "Harvestables", onChangeState: onChangeState),
+      ],
+    );
+  }
+}
+
+class FilterButton extends StatelessWidget {
+  const FilterButton({super.key, required this.name, required this.onChangeState});
+
+  final String name;
+  final Function(String) onChangeState;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {onChangeState(name);}, // Image tapped
+      child:Padding(
+        padding: const EdgeInsets.all(3.0),
+        child: Container(decoration:  BoxDecoration(color: Color(0xFF75704E), border: Border.all(color: Colors.black), borderRadius: BorderRadius.all(Radius.circular(7))), child: Padding(
+          padding: const EdgeInsets.all(3.5),
+          child: Text(name, style: const TextStyle(color: Colors.white)),
+        )),
+      ));
+  }
+}
+
+class ListChoice extends StatelessWidget {
+  ListChoice({super.key, required this.state, required this.ingredients});
+
+  final String state;
+  final Map ingredients;
+  late List currentIngredient;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        for (int i = 0; i < ingredients[state.toLowerCase()].length; i++) ActiveCards(name: ingredients[state.toLowerCase()][i]['ingredient'], effect1: ingredients[state.toLowerCase()][i]['effect1'], effect2: ingredients[state.toLowerCase()][i]['effect2'], effect3: ingredients[state.toLowerCase()][i]['effect3'], effect4: ingredients[state.toLowerCase()][i]['effect4'], location: ingredients[state.toLowerCase()][i]['blurb']),
+
+        
+      ],
+    );
+    
+  }
+}
+
+class FilterContainer extends StatefulWidget {
+  const FilterContainer({super.key, required this.ingredients});
+
+  final Map ingredients;
+
+  @override
+  State<FilterContainer> createState() => _FilterContainerState();
+}
+
+class _FilterContainerState extends State<FilterContainer> {
+
+  String state = "Mushrooms";
+
+  void onchangeState(String newState){
+    setState(() => state = newState);
+  }
+  
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Filter(state: state, onChangeState: onchangeState),
+        ListChoice(state: state, ingredients: widget.ingredients)
+      ],
     );
   }
 }
