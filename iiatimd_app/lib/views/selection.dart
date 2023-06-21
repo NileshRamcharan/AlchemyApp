@@ -13,13 +13,9 @@ class SelectionPage extends StatelessWidget {
         ),
         body: LayoutBuilder(builder: (context, constraints) {
           if (constraints.maxWidth > 450) {
-            return TabletLayout(
-              ingredients: ingredients,
-            );
+            return TabletLayout(ingredients: ingredients);
           } else {
-            return PhoneLayout(
-              ingredients: ingredients,
-            );
+            return PhoneLayout(ingredients: ingredients);
           }
         })
         //filter
@@ -29,20 +25,35 @@ class SelectionPage extends StatelessWidget {
 }
 
 class TabletLayout extends StatelessWidget {
-  const TabletLayout({super.key, required this.ingredients});
+  const TabletLayout({
+    super.key,
+    required this.ingredients,
+  });
 
   final Map ingredients;
+
   @override
   Widget build(BuildContext context) {
     return Container(
       color: Colors.red,
       child: SizedBox(
         width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height - 80,
-        child: Column(
+        height: MediaQuery.of(context).size.height,
+        child: Row(
           children: [
-            const Expanded(child: SelectedCardsPhone()),
-            Expanded(child: FilterContainer(ingredients: ingredients))
+            Expanded(
+              flex: 2,
+              child: Column(
+                children: [
+                  const Expanded(child: SelectedCards()),
+                  Expanded(child: FilterContainer(ingredients: ingredients))
+                ],
+              ),
+            ),
+            const Expanded(
+              flex: 3,
+              child: Placeholder(),
+            )
           ],
         ),
       ),
@@ -51,7 +62,10 @@ class TabletLayout extends StatelessWidget {
 }
 
 class PhoneLayout extends StatelessWidget {
-  const PhoneLayout({super.key, required this.ingredients});
+  const PhoneLayout({
+    super.key,
+    required this.ingredients,
+  });
 
   final Map ingredients;
 
@@ -63,7 +77,7 @@ class PhoneLayout extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          const Expanded(child: SelectedCardsPhone()),
+          const Expanded(child: SelectedCards()),
           Expanded(child: FilterContainer(ingredients: ingredients))
         ],
       ),
@@ -72,40 +86,37 @@ class PhoneLayout extends StatelessWidget {
 }
 
 //Card for selected ingredients on the main page
-class SelectedCardsPhone extends StatefulWidget {
-  const SelectedCardsPhone({super.key});
+class SelectedCards extends StatefulWidget {
+  const SelectedCards({super.key});
 
   @override
-  State<SelectedCardsPhone> createState() => _SelectedCardsPhone();
+  State<SelectedCards> createState() => _SelectedCards();
 }
 
-class _SelectedCardsPhone extends State<SelectedCardsPhone> {
+class _SelectedCards extends State<SelectedCards> {
   //get state of active ingredients
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.red,
-      child: SizedBox(
-        width: MediaQuery.of(context).size.width,
-        child: ListView.builder(
-            itemCount: 3, //list.length
-            itemBuilder: (context, index) {
-              if (index < 3) {
-                //if index = list.length
-                return const ActiveCards(
-                    name: "Abecaen longfin",
-                    effect1: "Weakness to frost",
-                    effect2: "Fortify sneak",
-                    effect3: "Weakness to poison",
-                    effect4: "Fortify restoration",
-                    location: "Collected by catching Abacean Longfin fish.");
-              } else {
-                return const AddIngredientCard();
-              }
-            }),
-      ),
-    );
+    return ListView.builder(
+        // scrollDirection: Axis.horizontal,
+        //  If tablet, change axis to horizontal
+        //  trying to figure out how to do that without copy pasting this code
+        itemCount: 3, //list.length
+        itemBuilder: (context, index) {
+          if (index < 3) {
+            //if index = list.length
+            return const ActiveCards(
+                name: "Abecaen longfin",
+                effect1: "Weakness to frost",
+                effect2: "Fortify sneak",
+                effect3: "Weakness to poison",
+                effect4: "Fortify restoration",
+                location: "Collected by catching Abacean Longfin fish.");
+          } else {
+            return const AddIngredientCard();
+          }
+        });
   }
 }
 
@@ -148,6 +159,7 @@ class ActiveCards extends StatelessWidget {
                 color: Colors.blue,
                 child: const Icon(Icons.add_circle_outline_outlined)),
             Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Container(
                     padding: const EdgeInsets.fromLTRB(5, 0, 5, 5),
@@ -161,7 +173,9 @@ class ActiveCards extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: SizedBox(
-                    width: screenWidth - 130,
+                    width: screenWidth < 450
+                        ? screenWidth - 130
+                        : screenWidth * .3,
                     child: Column(
                       children: [
                         Row(
@@ -313,22 +327,12 @@ class ListChoice extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: MediaQuery.of(context).size.height / 2.5 - 33,
+      height: MediaQuery.of(context).size.height / 2.5,
       child: ListView.builder(
           scrollDirection: Axis.vertical,
           shrinkWrap: true,
           itemBuilder: (context, index) {
             if (index < ingredients[state.toLowerCase()].length) {
-              // for (int i = 0; i < ingredients[state.toLowerCase()].length;) {
-              //   return ActiveCards(
-              //       name: ingredients[state.toLowerCase()][i]['ingredient'],
-              //       effect1: ingredients[state.toLowerCase()][i]['effect1'],
-              //       effect2: ingredients[state.toLowerCase()][i]['effect2'],
-              //       effect3: ingredients[state.toLowerCase()][i]['effect3'],
-              //       effect4: ingredients[state.toLowerCase()][i]['effect4'],
-              //       location: ingredients[state.toLowerCase()][i]['blurb']);
-              // }
-
               return ActiveCards(
                   name: ingredients[state.toLowerCase()][index]['ingredient'],
                   effect1: ingredients[state.toLowerCase()][index]['effect1'],
@@ -364,9 +368,7 @@ class _FilterContainerState extends State<FilterContainer> {
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
         Filter(state: state, onChangeState: onchangeState),
-        Container(
-            color: Colors.red,
-            child: ListChoice(state: state, ingredients: widget.ingredients))
+        ListChoice(state: state, ingredients: widget.ingredients)
       ],
     );
   }
