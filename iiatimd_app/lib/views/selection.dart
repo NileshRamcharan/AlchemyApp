@@ -8,58 +8,116 @@ class SelectionPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Recipes (infinitescroll)'),
-      ),
-      body: SizedBox(
+        appBar: AppBar(
+          title: const Text('Recipes (infinitescroll)'),
+        ),
+        body: LayoutBuilder(builder: (context, constraints) {
+          if (constraints.maxWidth > 450) {
+            return TabletLayout(
+              ingredients: ingredients,
+            );
+          } else {
+            return PhoneLayout(
+              ingredients: ingredients,
+            );
+          }
+        })
+        //filter
+        //ingredients
+        );
+  }
+}
+
+class TabletLayout extends StatelessWidget {
+  const TabletLayout({super.key, required this.ingredients});
+
+  final Map ingredients;
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Colors.red,
+      child: SizedBox(
         width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
+        height: MediaQuery.of(context).size.height - 80,
         child: Column(
           children: [
-            const SelectedCards(),
-            FilterContainer(ingredients: ingredients)
+            const Expanded(child: SelectedCardsPhone()),
+            Expanded(child: FilterContainer(ingredients: ingredients))
           ],
         ),
-      )
-      //filter
-      //ingredients
+      ),
     );
   }
 }
 
-//Card for selected ingredients on the main page
-class SelectedCards extends StatefulWidget {
-  const SelectedCards({super.key});
+class PhoneLayout extends StatelessWidget {
+  const PhoneLayout({super.key, required this.ingredients});
 
-  @override
-  State<SelectedCards> createState() => _SelectedCards();
-}
-
-class _SelectedCards extends State<SelectedCards> {
-  //get state of active ingredients
+  final Map ingredients;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
-      height: 330,
+      height: MediaQuery.of(context).size.height,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          const Expanded(child: SelectedCardsPhone()),
+          Expanded(child: FilterContainer(ingredients: ingredients))
+        ],
+      ),
+    );
+  }
+}
 
-      child: ListView.builder(
-          itemCount: 3, //list.length
-          itemBuilder: (context, index) {
-            if (index < 3) {
-              //if index = list.length
-              return ActiveCards(name: "Abecaen longfin", effect1: "Weakness to frost", effect2: "Fortify sneak", effect3: "Weakness to poison", effect4: "Fortify restoration", location: "Collected by catching Abacean Longfin fish.");
-            } else {
-              return const AddIngredientCard();
-            }
-          }),
+//Card for selected ingredients on the main page
+class SelectedCardsPhone extends StatefulWidget {
+  const SelectedCardsPhone({super.key});
+
+  @override
+  State<SelectedCardsPhone> createState() => _SelectedCardsPhone();
+}
+
+class _SelectedCardsPhone extends State<SelectedCardsPhone> {
+  //get state of active ingredients
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Colors.red,
+      child: SizedBox(
+        width: MediaQuery.of(context).size.width,
+        child: ListView.builder(
+            itemCount: 3, //list.length
+            itemBuilder: (context, index) {
+              if (index < 3) {
+                //if index = list.length
+                return const ActiveCards(
+                    name: "Abecaen longfin",
+                    effect1: "Weakness to frost",
+                    effect2: "Fortify sneak",
+                    effect3: "Weakness to poison",
+                    effect4: "Fortify restoration",
+                    location: "Collected by catching Abacean Longfin fish.");
+              } else {
+                return const AddIngredientCard();
+              }
+            }),
+      ),
     );
   }
 }
 
 class ActiveCards extends StatelessWidget {
-  const ActiveCards({super.key, required this.name, required this.effect1, required this.effect2, required this.effect3, required this.effect4, required this.location});
+  const ActiveCards(
+      {super.key,
+      required this.name,
+      required this.effect1,
+      required this.effect2,
+      required this.effect3,
+      required this.effect4,
+      required this.location});
 
   final String name;
 
@@ -147,11 +205,9 @@ class ActiveCards extends StatelessWidget {
                 ),
                 SizedBox(
                   width: screenWidth - 130,
-                  child: Flexible(
-                    child: Text(
-                      location,
-                      style: const TextStyle(color: Colors.white),
-                    ),
+                  child: Text(
+                    location,
+                    style: const TextStyle(color: Colors.white),
                   ),
                 ),
               ],
@@ -199,7 +255,6 @@ class AddIngredientCard extends StatelessWidget {
   }
 }
 
-
 class Filter extends StatelessWidget {
   const Filter({super.key, required this.state, required this.onChangeState});
 
@@ -221,7 +276,8 @@ class Filter extends StatelessWidget {
 }
 
 class FilterButton extends StatelessWidget {
-  const FilterButton({super.key, required this.name, required this.onChangeState});
+  const FilterButton(
+      {super.key, required this.name, required this.onChangeState});
 
   final String name;
   final Function(String) onChangeState;
@@ -229,14 +285,21 @@ class FilterButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {onChangeState(name);}, // Image tapped
-      child:Padding(
-        padding: const EdgeInsets.all(3.0),
-        child: Container(decoration:  BoxDecoration(color: Color(0xFF75704E), border: Border.all(color: Colors.black), borderRadius: BorderRadius.all(Radius.circular(7))), child: Padding(
-          padding: const EdgeInsets.all(3.5),
-          child: Text(name, style: const TextStyle(color: Colors.white)),
-        )),
-      ));
+        onTap: () {
+          onChangeState(name);
+        }, // Image tapped
+        child: Padding(
+          padding: const EdgeInsets.all(3.0),
+          child: Container(
+              decoration: BoxDecoration(
+                  color: const Color(0xFF75704E),
+                  border: Border.all(color: Colors.black),
+                  borderRadius: const BorderRadius.all(Radius.circular(7))),
+              child: Padding(
+                padding: const EdgeInsets.all(3.5),
+                child: Text(name, style: const TextStyle(color: Colors.white)),
+              )),
+        ));
   }
 }
 
@@ -249,14 +312,33 @@ class ListChoice extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        for (int i = 0; i < ingredients[state.toLowerCase()].length; i++) ActiveCards(name: ingredients[state.toLowerCase()][i]['ingredient'], effect1: ingredients[state.toLowerCase()][i]['effect1'], effect2: ingredients[state.toLowerCase()][i]['effect2'], effect3: ingredients[state.toLowerCase()][i]['effect3'], effect4: ingredients[state.toLowerCase()][i]['effect4'], location: ingredients[state.toLowerCase()][i]['blurb']),
+    return SizedBox(
+      height: MediaQuery.of(context).size.height / 2.5 - 33,
+      child: ListView.builder(
+          scrollDirection: Axis.vertical,
+          shrinkWrap: true,
+          itemBuilder: (context, index) {
+            if (index < ingredients[state.toLowerCase()].length) {
+              // for (int i = 0; i < ingredients[state.toLowerCase()].length;) {
+              //   return ActiveCards(
+              //       name: ingredients[state.toLowerCase()][i]['ingredient'],
+              //       effect1: ingredients[state.toLowerCase()][i]['effect1'],
+              //       effect2: ingredients[state.toLowerCase()][i]['effect2'],
+              //       effect3: ingredients[state.toLowerCase()][i]['effect3'],
+              //       effect4: ingredients[state.toLowerCase()][i]['effect4'],
+              //       location: ingredients[state.toLowerCase()][i]['blurb']);
+              // }
 
-        
-      ],
+              return ActiveCards(
+                  name: ingredients[state.toLowerCase()][index]['ingredient'],
+                  effect1: ingredients[state.toLowerCase()][index]['effect1'],
+                  effect2: ingredients[state.toLowerCase()][index]['effect2'],
+                  effect3: ingredients[state.toLowerCase()][index]['effect3'],
+                  effect4: ingredients[state.toLowerCase()][index]['effect4'],
+                  location: ingredients[state.toLowerCase()][index]['blurb']);
+            }
+          }),
     );
-    
   }
 }
 
@@ -270,19 +352,21 @@ class FilterContainer extends StatefulWidget {
 }
 
 class _FilterContainerState extends State<FilterContainer> {
-
   String state = "Mushrooms";
 
-  void onchangeState(String newState){
+  void onchangeState(String newState) {
     setState(() => state = newState);
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
         Filter(state: state, onChangeState: onchangeState),
-        ListChoice(state: state, ingredients: widget.ingredients)
+        Container(
+            color: Colors.red,
+            child: ListChoice(state: state, ingredients: widget.ingredients))
       ],
     );
   }
