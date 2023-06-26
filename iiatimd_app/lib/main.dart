@@ -36,9 +36,8 @@ class InitPage extends StatefulWidget {
 }
 
 class _InitPageState extends State<InitPage> {
-  final info_controller = PageController(
-    initialPage: 1,
-  );
+  //final info_controller = PageController(initialPage: 1,);
+  late PageController info_controller;
   late Future<AlchemyHolder> alchemyFuture;
 
   @override
@@ -59,6 +58,13 @@ class _InitPageState extends State<InitPage> {
         future: alchemyFuture,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
+            if (MediaQuery.of(context).size.width > 450) {
+              info_controller = PageController(viewportFraction: 1 / 3);
+            } else {
+              info_controller = PageController(
+                initialPage: 1,
+              );
+            }
             return (PageView(controller: info_controller, children: [
               SelectionPage(ingredients: snapshot.data!.ingredients),
               CraftingView(ingredients: snapshot.data!.ingredients),
@@ -73,6 +79,24 @@ class _InitPageState extends State<InitPage> {
         });
   }
 }
+
+// return LayoutBuilder(builder: (context,constraints)){
+//                   if(constraints.maxWidth > 450)
+//                   {
+//                     info_controller = PageController(viewportFraction: 1 / 3);
+//                   }
+//                   else{
+//                     info_controller = PageController(initialPage: 1,);
+//                   }
+//                   return PageView(
+//                         controller: info_controller,
+//                         children: [
+//                           SelectionPage(ingredients: snapshot.data!.ingredients),
+//                           CraftingView(ingredients: snapshot.data!.ingredients),
+//                           RecipePage(title: "recipe")
+//                         ]
+//                       );
+//                 }
 
 Future<AlchemyHolder> fetchAlchemy() async {
   final response = await http.get(Uri.parse('http://10.0.2.2:8000/api/all'));
