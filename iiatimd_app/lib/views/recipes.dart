@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-
 class RecipePage extends StatefulWidget {
   const RecipePage({super.key, required this.title});
 
@@ -104,19 +103,19 @@ class _RecipePageState extends State<RecipePage> {
                       final item = items[index];
                       addFavorite.add(false);
 
-                      return Padding(
-                        padding: const EdgeInsets.only(top: 10.0),
-                        child: SizedBox(
-                          width: screenWidth - 10,
-                          height: screenHeight / 6,
+                      return SizedBox(
+                        width: screenWidth,
+                        height: screenHeight / 6,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
                           child: Container(
                             decoration: const BoxDecoration(
-                              color: Color(0xffF2EBC9),
+                              // color: Color(0xffF2EBC9),
+                              color: Colors.red,
                             ),
                             child: Row(
                               children: [
-                                SizedBox(
-                                  width: 110,
+                                Expanded(
                                   child: Center(
                                     child: Container(
                                       width: 90,
@@ -125,44 +124,38 @@ class _RecipePageState extends State<RecipePage> {
                                     ),
                                   ),
                                 ),
-                                SizedBox(
-                                  width: screenWidth - 128,
+                                Expanded(
                                   child: Column(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceEvenly,
                                     children: [
-                                      Padding(
-                                        padding: const EdgeInsets.fromLTRB(
-                                            30, 0, 0, 0),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceAround,
-                                          children: [
-                                            Flexible(
-                                              child: Text(
-                                                item,
-                                              ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceAround,
+                                        children: [
+                                          Flexible(
+                                            child: Text(
+                                              item,
                                             ),
-                                            IconButton(
-                                              icon: addFavorite.elementAt(index)
-                                                  ? const Icon(
-                                                      Icons.star,
-                                                    )
-                                                  : const Icon(
-                                                      Icons
-                                                          .star_border_outlined,
-                                                    ),
-                                              onPressed: () {
-                                                setState(() {
-                                                  addFavorite[index] =
-                                                      !addFavorite
-                                                          .elementAt(index);
-                                                });
-                                                //print(addFavorite);
-                                              },
-                                            ),
-                                          ],
-                                        ),
+                                          ),
+                                          IconButton(
+                                            icon: addFavorite.elementAt(index)
+                                                ? const Icon(
+                                                    Icons.star,
+                                                  )
+                                                : const Icon(
+                                                    Icons.star_border_outlined,
+                                                  ),
+                                            onPressed: () {
+                                              setState(() {
+                                                addFavorite[index] =
+                                                    !addFavorite
+                                                        .elementAt(index);
+                                              });
+                                              //print(addFavorite);
+                                            },
+                                          ),
+                                        ],
                                       ),
                                       Row(
                                         mainAxisAlignment:

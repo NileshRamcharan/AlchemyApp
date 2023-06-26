@@ -31,14 +31,14 @@ class AlchemyApp extends StatelessWidget {
 class InitPage extends StatefulWidget {
   const InitPage({super.key});
 
-  
-
   @override
   State<InitPage> createState() => _InitPageState();
 }
 
 class _InitPageState extends State<InitPage> {
-  final info_controller = PageController(initialPage: 1,);
+  final info_controller = PageController(
+    initialPage: 1,
+  );
   late Future<AlchemyHolder> alchemyFuture;
 
   @override
@@ -56,37 +56,30 @@ class _InitPageState extends State<InitPage> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<AlchemyHolder>(
-      future: alchemyFuture,
-          builder: (context, snapshot){
-            if (snapshot.hasData) {
-                return (
-                    PageView(
-                      controller: info_controller,
-                      children: [
-                        SelectionPage(ingredients: snapshot.data!.ingredients),
-                        CraftingView(ingredients: snapshot.data!.ingredients),
-                        RecipePage(title: "recipe")
-                      ]
-                    )
-                  );
-              } else if (snapshot.hasError) {
-                return Text('${snapshot.error}');
-              }
-
-              // By default, show a loading spinner.
-              return const CircularProgressIndicator();
+        future: alchemyFuture,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return (PageView(controller: info_controller, children: [
+              SelectionPage(ingredients: snapshot.data!.ingredients),
+              CraftingView(ingredients: snapshot.data!.ingredients),
+              RecipePage(title: "recipe")
+            ]));
+          } else if (snapshot.hasError) {
+            return Text('${snapshot.error}');
           }
-    );
+
+          // By default, show a loading spinner.
+          return const CircularProgressIndicator();
+        });
   }
 }
 
 Future<AlchemyHolder> fetchAlchemy() async {
-  final response = await http
-      .get(Uri.parse('http://10.0.2.2:8000/api/all'));
+  final response = await http.get(Uri.parse('http://10.0.2.2:8000/api/all'));
   if (response.statusCode == 200) {
     // If the server did return a 200 OK response,
     // then parse the JSON.
-    
+
     return AlchemyHolder.fromJson(jsonDecode(response.body));
   } else {
     // If the server did not return a 200 OK response,
@@ -108,5 +101,3 @@ class AlchemyHolder {
     );
   }
 }
-
-

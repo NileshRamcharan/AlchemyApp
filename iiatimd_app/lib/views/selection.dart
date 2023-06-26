@@ -11,77 +11,17 @@ class SelectionPage extends StatelessWidget {
         appBar: AppBar(
           title: const Text('Recipes (infinitescroll)'),
         ),
-        body: LayoutBuilder(builder: (context, constraints) {
-          if (constraints.maxWidth > 450) {
-            return TabletLayout(ingredients: ingredients);
-          } else {
-            return PhoneLayout(ingredients: ingredients);
-          }
-        })
-        //filter
-        //ingredients
-        );
-  }
-}
-
-class TabletLayout extends StatelessWidget {
-  const TabletLayout({
-    super.key,
-    required this.ingredients,
-  });
-
-  final Map ingredients;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: Colors.red,
-      child: SizedBox(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        child: Row(
-          children: [
-            Expanded(
-              flex: 2,
-              child: Column(
-                children: [
-                  const Expanded(child: SelectedCards()),
-                  Expanded(child: FilterContainer(ingredients: ingredients))
-                ],
-              ),
-            ),
-            const Expanded(
-              flex: 3,
-              child: Placeholder(),
-            )
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class PhoneLayout extends StatelessWidget {
-  const PhoneLayout({
-    super.key,
-    required this.ingredients,
-  });
-
-  final Map ingredients;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          const Expanded(child: SelectedCards()),
-          Expanded(child: FilterContainer(ingredients: ingredients))
-        ],
-      ),
-    );
+        body: SizedBox(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              const Expanded(child: SelectedCards()),
+              Expanded(child: FilterContainer(ingredients: ingredients))
+            ],
+          ),
+        ));
   }
 }
 
