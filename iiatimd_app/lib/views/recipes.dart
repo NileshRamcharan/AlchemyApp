@@ -1,33 +1,12 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'RecipeView(infinitescroll)',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: const RecipePage(title: 'Flutter Demo Home Page'),
-    );
-  }
-}
+import '../main.dart' show RecipeStorage;
 
 class RecipePage extends StatefulWidget {
-  const RecipePage({super.key, required this.title});
+  const RecipePage(
+      {super.key, required this.ingredients, required this.storage});
 
-  final String title;
+  final Map ingredients;
+  final RecipeStorage storage;
 
   @override
   State<RecipePage> createState() => _RecipePageState();
@@ -35,70 +14,23 @@ class RecipePage extends StatefulWidget {
 
 class _RecipePageState extends State<RecipePage> {
   final controller = ScrollController();
+
   List<String> items = [];
   List<bool> addFavorite = [];
   bool hasMore = true;
-  int page = 1;
-  bool isLoading = false;
 
-  //infinite scroll controller
   @override
   void initState() {
+    // TODO: implement initState
     super.initState();
-
-    fetch();
-
-    controller.addListener(() {
-      if (controller.position.maxScrollExtent == controller.offset) {
-        fetch();
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    controller.dispose();
-
-    super.dispose();
-  }
-
-  Future fetch() async {
-    if (isLoading) return;
-    isLoading = true;
-
-    const limit = 10;
-    final url = Uri.parse(
-        'https://jsonplaceholder.typicode.com/posts?_limit=$limit&_page=$page');
-    final response = await http.get(url);
-
-    if (response.statusCode == 200) {
-      final List newItems = json.decode(response.body);
-
+    widget.storage.readRecipes().then((value) {
       setState(() {
-        page++;
-        isLoading = false;
-
-        if (newItems.length < limit) {
-          hasMore = false;
+        final splitValues = value.split(';');
+        for (int i = 0; i < splitValues.length - 1; i++) {
+          items.add(splitValues[i]);
         }
-        items.addAll(newItems.map<String>((item) {
-          //final number = item['id'];
-
-          return 'Potion of Regenerate Stamina';
-        }).toList());
       });
-    }
-  }
-
-  Future refresh() async {
-    setState(() {
-      items.clear();
-      page = 1;
-      hasMore = true;
-      isLoading = false;
     });
-
-    fetch();
   }
 
   @override
@@ -113,118 +45,111 @@ class _RecipePageState extends State<RecipePage> {
             ? const Center(
                 child: CircularProgressIndicator(),
               )
-            : RefreshIndicator(
-                onRefresh: refresh,
-                child: ListView.builder(
-                  controller: controller,
-                  padding: const EdgeInsets.all(8),
-                  itemCount: items.length + 1,
-                  itemBuilder: (context, index) {
-                    if (index < items.length) {
-                      final item = items[index];
-                      addFavorite.add(false);
+            : ListView.builder(
+                controller: controller,
+                itemCount: items.length + 1,
+                itemBuilder: (context, index) {
+                  if (index < items.length) {
+                    final item = items[index];
+                    addFavorite.add(false);
 
-                      return Padding(
-                        padding: const EdgeInsets.only(top: 10.0),
-                        child: SizedBox(
-                          width: screenWidth - 10,
-                          height: screenHeight / 6,
-                          child: Container(
-                            decoration: const BoxDecoration(
-                              color: Color(0xffF2EBC9),
-                            ),
-                            child: Row(
-                              children: [
-                                SizedBox(
-                                  width: 110,
-                                  child: Center(
-                                    child: Container(
-                                      width: 90,
-                                      height: 90,
-                                      color: const Color(0xffE1DBBF),
-                                    ),
-                                  ),
+                    return SizedBox(
+                      width: screenWidth,
+                      height: screenWidth > 450
+                          ? screenHeight / 6
+                          : screenHeight / 6,
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(5, 5, 5, 0),
+                        child: Container(
+                          decoration: const BoxDecoration(
+                            color: Color(0xffF2EBC9),
+                          ),
+                          child: Row(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8),
+                                child: Container(
+                                  width: 75,
+                                  height: 75,
+                                  color: const Color(0xffE1DBBF),
+                                  //image potion
                                 ),
-                                SizedBox(
-                                  width: screenWidth - 128,
-                                  child: Column(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.fromLTRB(
-                                            30, 0, 0, 0),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceAround,
-                                          children: [
-                                            Flexible(
-                                              child: Text(
-                                                item,
-                                              ),
-                                            ),
-                                            IconButton(
-                                              icon: addFavorite.elementAt(index)
-                                                  ? const Icon(
-                                                      Icons.star,
-                                                    )
-                                                  : const Icon(
-                                                      Icons
-                                                          .star_border_outlined,
-                                                    ),
-                                              onPressed: () {
-                                                setState(() {
-                                                  addFavorite[index] =
-                                                      !addFavorite
-                                                          .elementAt(index);
-                                                });
-                                                //print(addFavorite);
-                                              },
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Row(
+                              ),
+                              Expanded(
+                                child: Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 35),
+                                      child: Row(
                                         mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
+                                            MainAxisAlignment.spaceBetween,
                                         children: [
-                                          Container(
-                                            width: 50,
-                                            height: 50,
-                                            color: const Color(0xffE1DBBF),
+                                          Text(
+                                            // TEXT
+                                            item,
                                           ),
-                                          Container(
-                                            width: 50,
-                                            height: 50,
-                                            color: const Color(0xffE1DBBF),
+                                          IconButton(
+                                            icon: addFavorite.elementAt(index)
+                                                ? const Icon(
+                                                    Icons.star,
+                                                  )
+                                                : const Icon(
+                                                    Icons.star_border_outlined,
+                                                  ),
+                                            onPressed: () {
+                                              setState(() {
+                                                addFavorite[index] =
+                                                    !addFavorite
+                                                        .elementAt(index);
+                                              });
+                                              //print(addFavorite);
+                                            },
                                           ),
-                                          Container(
-                                            width: 50,
-                                            height: 50,
-                                            color: const Color(0xffE1DBBF),
-                                          )
                                         ],
                                       ),
-                                    ],
-                                  ),
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        Container(
+                                          width: 50,
+                                          height: 50,
+                                          color: const Color(0xffE1DBBF),
+                                        ),
+                                        Container(
+                                          width: 50,
+                                          height: 50,
+                                          color: const Color(0xffE1DBBF),
+                                        ),
+                                        Container(
+                                          width: 50,
+                                          height: 50,
+                                          color: const Color(0xffE1DBBF),
+                                        )
+                                      ],
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                         ),
-                      );
-                    } else {
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 32),
-                        child: Center(
-                          child: hasMore
-                              ? const CircularProgressIndicator()
-                              : const Text('no more data'),
-                        ),
-                      );
-                    }
-                  },
-                ),
+                      ),
+                    );
+                  } else {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 32),
+                      child: Center(
+                        child: hasMore
+                            ? const CircularProgressIndicator()
+                            : const Text('no more data'),
+                      ),
+                    );
+                  }
+                },
               ));
   }
 }

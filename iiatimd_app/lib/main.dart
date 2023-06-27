@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:iiatimd_app/views/crafting.dart';
 import 'package:iiatimd_app/views/ingredients.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
 import 'package:iiatimd_app/views/recipes.dart';
 import 'package:iiatimd_app/views/selection.dart';
 
@@ -28,10 +30,43 @@ class AlchemyApp extends StatelessWidget {
   }
 }
 
+class RecipeStorage {
+  Future<String> get _localPath async {
+    final directory = await getApplicationDocumentsDirectory();
+
+    return directory.path;
+  }
+
+  Future<File> get _localFile async {
+    final path = await _localPath;
+    return File('$path/recipe.txt');
+  }
+
+  Future<String> readRecipes() async {
+    try {
+      final file = await _localFile;
+
+      // Read the file
+      final contents = await file.readAsString();
+      return contents;
+    } catch (e) {
+      // If encountering an error, return 0
+      return '';
+    }
+  }
+
+  Future<File> writeRecipes(String title, String ingredient1,
+      String ingredient2, String? ingredient3) async {
+    final file = await _localFile;
+
+    // Write the file
+    return file.writeAsString('$title,$ingredient1,$ingredient2,$ingredient3;',
+        mode: FileMode.append);
+  }
+}
+
 class InitPage extends StatefulWidget {
   const InitPage({super.key});
-
-  
 
   @override
   State<InitPage> createState() => _InitPageState();
@@ -56,42 +91,43 @@ class _InitPageState extends State<InitPage> {
 
   List selectedIngredients = [];
 
-  void giveMainSelectedIngredients(List newSelection){
+  void giveMainSelectedIngredients(List newSelection) {
     setState(() => selectedIngredients = newSelection);
   }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<AlchemyHolder>(
-      future: alchemyFuture,
-          builder: (context, snapshot){
-            if (snapshot.hasData) {
-              if (MediaQuery.of(context).size.width > 450)
-              {
-                info_controller = PageController(viewportFraction: 1 / 3);
-              }
-              else{
-                info_controller = PageController(initialPage: 1,);
-              }
-                return (
-                    PageView(
-                      
-                      controller: info_controller,
-                      children: [
-                        SelectionPage(ingredients: snapshot.data!.ingredients),
-                        CraftingView(ingredients: snapshot.data!.ingredients, giveMainSelectedIngredients: giveMainSelectedIngredients, recipes: snapshot.data!.recipes,),
-                        RecipePage(title: "recipe")
-                      ]
-                    )
-                  );
-              } else if (snapshot.hasError) {
-                return Text('${snapshot.error}');
-              }
-
-              // By default, show a loading spinner.
-              return const CircularProgressIndicator();
+        future: alchemyFuture,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            if (MediaQuery.of(context).size.width > 450) {
+              info_controller = PageController(viewportFraction: 1 / 3);
+            } else {
+              info_controller = PageController(
+                initialPage: 1,
+              );
+            }
+            return (PageView(controller: info_controller, children: [
+              SelectionPage(ingredients: snapshot.data!.ingredients),
+              CraftingView(
+                ingredients: snapshot.data!.ingredients,
+                giveMainSelectedIngredients: giveMainSelectedIngredients,
+                recipes: snapshot.data!.recipes,
+                storage: RecipeStorage(),
+              ),
+              RecipePage(
+                ingredients: snapshot.data!.ingredients,
+                storage: RecipeStorage(),
+              )
+            ]));
+          } else if (snapshot.hasError) {
+            return Text('${snapshot.error}');
           }
-    );
+
+          // By default, show a loading spinner.
+          return const CircularProgressIndicator();
+        });
   }
 }
 
@@ -114,12 +150,11 @@ class _InitPageState extends State<InitPage> {
 //                 }
 
 Future<AlchemyHolder> fetchAlchemy() async {
-  final response = await http
-      .get(Uri.parse('http://10.0.2.2:8000/api/all'));
+  final response = await http.get(Uri.parse('http://10.0.2.2:8000/api/all'));
   if (response.statusCode == 200) {
     // If the server did return a 200 OK response,
     // then parse the JSON.
-    
+
     return AlchemyHolder.fromJson(jsonDecode(response.body));
   } else {
     // If the server did not return a 200 OK response,
@@ -144,5 +179,3 @@ class AlchemyHolder {
     );
   }
 }
-
-
