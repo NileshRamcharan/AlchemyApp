@@ -1,12 +1,44 @@
 import 'package:flutter/material.dart';
 
-class CraftingView extends StatelessWidget {
-  CraftingView({super.key, required this.ingredients});
+class CraftingView extends StatefulWidget {
+  CraftingView({super.key, required this.ingredients, required this.giveMainSelectedIngredients, required this.recipes});
 
   final Map ingredients;
+  final List recipes;
+  final Function giveMainSelectedIngredients;
 
+  @override
+  State<CraftingView> createState() => _CraftingViewState();
+}
+
+class _CraftingViewState extends State<CraftingView> with AutomaticKeepAliveClientMixin<CraftingView>{
   late double maxWidth;
+
   late double maxHeight;
+
+  List chosenIngredients = [];
+
+  List state = [];
+
+  void onchangeState(List newState){
+    setState(() => state = chosenIngredients);
+    widget.giveMainSelectedIngredients(state);
+
+  }
+
+  void addIngredient(Map ingredient){
+
+    if(chosenIngredients.length < 3 && !chosenIngredients.contains(ingredient))
+    {
+      chosenIngredients.add(ingredient);
+      onchangeState(chosenIngredients);
+    }
+  }
+
+  void removeIngredient(Map ingredient){
+    chosenIngredients.removeWhere((item) => item == ingredient);
+    onchangeState(chosenIngredients);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,15 +65,9 @@ class CraftingView extends StatelessWidget {
                   Text("Alchemy", style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: Colors.white),),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                    SelectionSlot(),
-                    SelectionSlot(),
-                    SelectionSlot(),
-                    ],
-                  ),
+                          color: Colors.white),
+                      ),
+                  craftSlotHolder(ingredientList: chosenIngredients,removeFunction: removeIngredient,),
                   Center(
                     child: SizedBox(
                       width: 70,
@@ -63,17 +89,39 @@ class CraftingView extends StatelessWidget {
             width: maxWidth,
             child: DecoratedBox(
                decoration: const BoxDecoration(color: Color(0xffE1DBBF)),
-               child: FilterContainer(ingredients: ingredients),
+               child: FilterContainer(ingredients: widget.ingredients, chosenIngredients: chosenIngredients, addFunction: addIngredient,),
             ),
           )
         ],
       )
     );
   }
+  @override
+  bool get wantKeepAlive => true;
 }
 
-class SelectionSlot extends StatelessWidget {
-  const SelectionSlot({super.key});
+class craftSlotHolder extends StatelessWidget {
+  const craftSlotHolder({super.key, required this.ingredientList, required this.removeFunction});
+
+  final ingredientList;
+  final Function removeFunction;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: 
+      [
+        for (var i = 0; i < ingredientList.length; i++) SelectionSlot(ingredient: ingredientList[i], removeFunction: removeFunction,),
+        for (var i = 0; i < 3-ingredientList.length; i++) SelectionSlotEmpty(),
+      ],
+    );
+  }
+}
+
+class SelectionSlotEmpty extends StatelessWidget {
+  const SelectionSlotEmpty({super.key});
+
 
   @override
   Widget build(BuildContext context) {
@@ -82,6 +130,34 @@ class SelectionSlot extends StatelessWidget {
       height: 70,
       child: DecoratedBox(
         decoration: BoxDecoration(color: Color(0xffE1DBBF)),
+      ),
+    );
+  }
+}
+
+class SelectionSlot extends StatelessWidget {
+  SelectionSlot({super.key, this.ingredient, required this.removeFunction});
+
+  final ingredient;
+  final Function removeFunction;  
+  
+
+  @override
+  Widget build(BuildContext context) {
+    debugPrint(ingredient["ingredient"]);
+    return SizedBox(
+      width: 70,
+      height: 70,
+      child: GestureDetector(
+        onTap: ()
+        {
+          removeFunction(ingredient);
+        }, // Image tapped
+        child:DecoratedBox(
+          decoration: const BoxDecoration(color: Color(0xffE1DBBF)),
+          child: Center(child: Text(ingredient["ingredient"],textAlign: TextAlign.center,)),
+          
+        ),
       ),
     );
   }
@@ -110,17 +186,48 @@ class CraftButton extends StatelessWidget {
 }
 
 class IngredientSlot extends StatelessWidget {
-  const IngredientSlot({super.key, required this.ingredient});
+  IngredientSlot({super.key, required this.ingredient, required this.chosenIngredients, required this.addFunction});
 
   final Map ingredient;
+  final List chosenIngredients;
+  final Function addFunction;
+
+  bool isActive = true;
+  Color activeColor = Colors.black;
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 50,
-      height: 50,
-      child: DecoratedBox(
-        decoration: BoxDecoration(color: Colors.black),
+    //To check wether this card is active first checks per ingredient wether its effects match any of the effects of the selected ingredients.
+    List foundMatches = [];
+    for (var chosenIngredient in chosenIngredients)
+    {
+      bool match = false;
+      List effectList = [chosenIngredient["effect1"],chosenIngredient["effect2"],chosenIngredient["effect3"],chosenIngredient["effect4"]];
+      for (var effect in effectList)
+      {
+        if(effect==ingredient["effect1"] || effect==ingredient["effect2"] || effect==ingredient["effect3"] || effect==ingredient["effect4"])
+        {
+          match = true;
+        }
+      }
+      foundMatches.add(match);
+    }
+    //If any of the selected ingredients do not match sets this card inactive.
+    if(foundMatches.contains(false) || chosenIngredients.contains(ingredient))
+    {
+      activeColor = Colors.grey;
+      isActive = false;
+    }
+
+    return GestureDetector(
+      onTap: () {
+        if(isActive)
+        {
+          addFunction(ingredient);
+        }
+      }, // Image tapped
+      child:DecoratedBox(
+        decoration: BoxDecoration(color: activeColor),
         child: Center(child: Text(ingredient["ingredient"], style: const TextStyle(color: Colors.white),textAlign: TextAlign.center,)),
       ),
     );
@@ -170,10 +277,13 @@ class FilterButton extends StatelessWidget {
 }
 
 class ListChoice extends StatelessWidget {
-  ListChoice({super.key, required this.state, required this.ingredients});
+  ListChoice({super.key, required this.state, required this.ingredients, required this.chosenIngredients, required this.addFunction});
 
   final String state;
   final Map ingredients;
+  final List chosenIngredients;
+
+  final Function addFunction;
 
   @override
   Widget build(BuildContext context) {
@@ -186,7 +296,7 @@ class ListChoice extends StatelessWidget {
         crossAxisCount: 4,
         childAspectRatio: (50 / 50),
         children: [
-          for (int i = 0; i < ingredients[state.toLowerCase()].length; i++) IngredientSlot(ingredient: ingredients[state.toLowerCase()][i]),
+          for (int i = 0; i < ingredients[state.toLowerCase()].length; i++) IngredientSlot(ingredient: ingredients[state.toLowerCase()][i], chosenIngredients: chosenIngredients, addFunction: addFunction),
         ],
       ),
     );
@@ -194,9 +304,11 @@ class ListChoice extends StatelessWidget {
 }
 
 class FilterContainer extends StatefulWidget {
-  const FilterContainer({super.key, required this.ingredients});
+  const FilterContainer({super.key, required this.ingredients, required this.chosenIngredients, required this.addFunction});
 
   final Map ingredients;
+  final List chosenIngredients;
+  final Function addFunction;
 
   @override
   State<FilterContainer> createState() => _FilterContainerState();
@@ -215,7 +327,7 @@ class _FilterContainerState extends State<FilterContainer> {
     return Column(
       children: [
         Filter(state: state, onChangeState: onchangeState),
-        ListChoice(state: state, ingredients: widget.ingredients)
+        ListChoice(state: state, ingredients: widget.ingredients, chosenIngredients: widget.chosenIngredients, addFunction: widget.addFunction)
       ],
     );
   }

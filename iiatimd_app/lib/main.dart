@@ -54,6 +54,12 @@ class _InitPageState extends State<InitPage> {
     super.dispose();
   }
 
+  List selectedIngredients = [];
+
+  void giveMainSelectedIngredients(List newSelection){
+    setState(() => selectedIngredients = newSelection);
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<AlchemyHolder>(
@@ -73,7 +79,7 @@ class _InitPageState extends State<InitPage> {
                       controller: info_controller,
                       children: [
                         SelectionPage(ingredients: snapshot.data!.ingredients),
-                        CraftingView(ingredients: snapshot.data!.ingredients),
+                        CraftingView(ingredients: snapshot.data!.ingredients, giveMainSelectedIngredients: giveMainSelectedIngredients, recipes: snapshot.data!.recipes,),
                         RecipePage(title: "recipe")
                       ]
                     )
@@ -124,14 +130,17 @@ Future<AlchemyHolder> fetchAlchemy() async {
 
 class AlchemyHolder {
   final Map ingredients;
+  final List recipes;
 
   const AlchemyHolder({
     required this.ingredients,
+    required this.recipes,
   });
 
   factory AlchemyHolder.fromJson(Map<String, dynamic> json) {
     return AlchemyHolder(
       ingredients: json['ingredients'],
+      recipes: json['potions'],
     );
   }
 }
