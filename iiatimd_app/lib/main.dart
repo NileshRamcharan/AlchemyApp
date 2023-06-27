@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:iiatimd_app/views/crafting.dart';
 import 'package:iiatimd_app/views/ingredients.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
 import 'package:iiatimd_app/views/recipes.dart';
 import 'package:iiatimd_app/views/selection.dart';
 
@@ -25,6 +27,41 @@ class AlchemyApp extends StatelessWidget {
       ),
       home: const InitPage(),
     );
+  }
+}
+
+class RecipeStorage {
+  Future<String> get _localPath async {
+    final directory = await getApplicationDocumentsDirectory();
+
+    return directory.path;
+  }
+
+  Future<File> get _localFile async {
+    final path = await _localPath;
+    return File('$path/recipe.txt');
+  }
+
+  Future<String> readRecipes() async {
+    try {
+      final file = await _localFile;
+
+      // Read the file
+      final contents = await file.readAsString();
+      return contents;
+    } catch (e) {
+      // If encountering an error, return 0
+      return '';
+    }
+  }
+
+  Future<File> writeRecipes(String title, String ingredient1,
+      String ingredient2, String? ingredient3) async {
+    final file = await _localFile;
+
+    // Write the file
+    return file.writeAsString('$title,$ingredient1,$ingredient2,$ingredient3;',
+        mode: FileMode.append);
   }
 }
 
@@ -67,8 +104,14 @@ class _InitPageState extends State<InitPage> {
             }
             return (PageView(controller: info_controller, children: [
               SelectionPage(ingredients: snapshot.data!.ingredients),
-              CraftingView(ingredients: snapshot.data!.ingredients),
-              RecipePage(title: "recipe")
+              CraftingView(
+                ingredients: snapshot.data!.ingredients,
+                storage: RecipeStorage(),
+              ),
+              RecipePage(
+                ingredients: snapshot.data!.ingredients,
+                storage: RecipeStorage(),
+              )
             ]));
           } else if (snapshot.hasError) {
             return Text('${snapshot.error}');

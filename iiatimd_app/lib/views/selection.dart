@@ -9,13 +9,13 @@ class SelectionPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Recipes (infinitescroll)'),
+          title: const Text('Selected'),
         ),
         body: SizedBox(
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               const Expanded(child: SelectedCards()),
               Expanded(child: FilterContainer(ingredients: ingredients))
@@ -39,10 +39,7 @@ class _SelectedCards extends State<SelectedCards> {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-        // scrollDirection: Axis.horizontal,
-        //  If tablet, change axis to horizontal
-        //  trying to figure out how to do that without copy pasting this code
-        itemCount: 3, //list.length
+        itemCount: 3,
         itemBuilder: (context, index) {
           if (index < 3) {
             //if index = list.length
@@ -84,7 +81,7 @@ class ActiveCards extends StatelessWidget {
     double screenWidth = MediaQuery.of(context).size.width;
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(5, 0, 5, 5),
+      padding: const EdgeInsets.fromLTRB(5, 5, 5, 0),
       child: Container(
         padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
         decoration: BoxDecoration(
@@ -98,73 +95,75 @@ class ActiveCards extends StatelessWidget {
                 height: 75,
                 color: Colors.blue,
                 child: const Icon(Icons.add_circle_outline_outlined)),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Container(
-                    padding: const EdgeInsets.fromLTRB(5, 0, 5, 5),
-                    child: Text(
-                      name, //list.item.title
-                      style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white),
-                    )),
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: SizedBox(
-                    width: screenWidth < 450
-                        ? screenWidth - 130
-                        : screenWidth * .3,
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: <Widget>[
-                            Flexible(
-                              child: Text(
-                                  effect1, //list.item.title.component[0]
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Container(
+                      padding: const EdgeInsets.fromLTRB(5, 0, 5, 5),
+                      child: Text(
+                        name, //list.item.title
+                        style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white),
+                      )),
+                  Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  effect1, //list.item.title.component[2]
                                   textAlign: TextAlign.center,
-                                  style: const TextStyle(color: Colors.white)),
-                            ),
-                            Flexible(
-                              child: Text(
-                                  effect2, //list.item.title.component[1]
-                                  textAlign: TextAlign.center,
-                                  style: const TextStyle(color: Colors.white)),
-                            )
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: <Widget>[
-                            Flexible(
-                              child: Text(
-                                effect3, //list.item.title.component[2]
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(color: Colors.white),
+                                  style: const TextStyle(color: Colors.white),
+                                ),
                               ),
-                            ),
-                            Flexible(
-                              child: Text(
-                                  effect4, //list.item.title.component[3]
+                              Expanded(
+                                child: Text(
+                                    effect2, //list.item.title.component[3]
+                                    textAlign: TextAlign.center,
+                                    style:
+                                        const TextStyle(color: Colors.white)),
+                              )
+                            ]),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 8.0),
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  effect3, //list.item.title.component[2]
                                   textAlign: TextAlign.center,
-                                  style: const TextStyle(color: Colors.white)),
-                            )
-                          ],
-                        ),
-                      ],
+                                  style: const TextStyle(color: Colors.white),
+                                ),
+                              ),
+                              Expanded(
+                                child: Text(
+                                    effect4, //list.item.title.component[3]
+                                    textAlign: TextAlign.center,
+                                    style:
+                                        const TextStyle(color: Colors.white)),
+                              )
+                            ]),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    width: screenWidth - 130,
+                    child: Text(
+                      location,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(color: Colors.white),
                     ),
                   ),
-                ),
-                SizedBox(
-                  width: screenWidth - 130,
-                  child: Text(
-                    location,
-                    style: const TextStyle(color: Colors.white),
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ],
         ),
