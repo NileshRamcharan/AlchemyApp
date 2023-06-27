@@ -4,7 +4,7 @@ class CraftingView extends StatefulWidget {
   CraftingView({super.key, required this.ingredients, required this.giveMainSelectedIngredients, required this.recipes});
 
   final Map ingredients;
-  final List recipes;
+  final Map recipes;
   final Function giveMainSelectedIngredients;
 
   @override
@@ -20,10 +20,34 @@ class _CraftingViewState extends State<CraftingView> with AutomaticKeepAliveClie
 
   List state = [];
 
-  void onchangeState(List newState){
+  String potion = "";
+
+  void craftPotion()
+  {
+    if(chosenIngredients.length == 3)
+    {
+      String effect = "";
+      List effects = [];
+      List checkEffects = [chosenIngredients[2]["effect1"], chosenIngredients[2]["effect2"], chosenIngredients[2]["effect3"], chosenIngredients[2]["effect4"]];
+
+      for(var i = 0; i < 2; i++)
+      {
+        effects.add([chosenIngredients[i]["effect1"], chosenIngredients[i]["effect2"], chosenIngredients[i]["effect3"], chosenIngredients[i]["effect4"]]);
+      }
+      for(var localEffect in checkEffects)
+      {
+        if(effects[0].contains(localEffect) && effects[1].contains(localEffect))
+        {
+          effect = localEffect;
+        }
+      }
+      setState(() => potion = widget.recipes[effect]);
+    }
+  }
+
+  void onchangeState(){
     setState(() => state = chosenIngredients);
     widget.giveMainSelectedIngredients(state);
-
   }
 
   void addIngredient(Map ingredient){
@@ -31,13 +55,13 @@ class _CraftingViewState extends State<CraftingView> with AutomaticKeepAliveClie
     if(chosenIngredients.length < 3 && !chosenIngredients.contains(ingredient))
     {
       chosenIngredients.add(ingredient);
-      onchangeState(chosenIngredients);
+      onchangeState();
     }
   }
 
   void removeIngredient(Map ingredient){
     chosenIngredients.removeWhere((item) => item == ingredient);
-    onchangeState(chosenIngredients);
+    onchangeState();
   }
 
   @override
@@ -73,12 +97,13 @@ class _CraftingViewState extends State<CraftingView> with AutomaticKeepAliveClie
                       width: 70,
                       height: 70,
                       child: DecoratedBox(
-                        decoration: BoxDecoration(color: Color(0xffE1DBBF)
+                        decoration: BoxDecoration(color: Color(0xffE1DBBF),
                         ),
+                        child: Center(child: Text(potion,textAlign: TextAlign.center,)),
                       ),
                     ),
                   ),
-                  CraftButton(),
+                  CraftButton(craftPotion: craftPotion),
                 ],
                ),
             ),
@@ -144,7 +169,6 @@ class SelectionSlot extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint(ingredient["ingredient"]);
     return SizedBox(
       width: 70,
       height: 70,
@@ -164,12 +188,14 @@ class SelectionSlot extends StatelessWidget {
 }
 
 class CraftButton extends StatelessWidget {
-  const CraftButton({super.key});
+  const CraftButton({super.key, required this.craftPotion});
+
+  final Function craftPotion;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {}, // Image tapped
+      onTap: () {craftPotion();}, // Image tapped
       child:Padding(
         padding: const EdgeInsets.all(4.0),
         child: Container(

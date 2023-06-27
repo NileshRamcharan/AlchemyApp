@@ -130,7 +130,7 @@ Future<AlchemyHolder> fetchAlchemy() async {
 
 class AlchemyHolder {
   final Map ingredients;
-  final List recipes;
+  final Map recipes;
 
   const AlchemyHolder({
     required this.ingredients,
