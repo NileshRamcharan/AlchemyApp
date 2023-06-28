@@ -1,8 +1,4 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
-import 'dart:io';
 import '../main.dart' show RecipeStorage;
 
 class CraftingView extends StatefulWidget {
@@ -83,6 +79,7 @@ class _CraftingViewState extends State<CraftingView>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     maxHeight = MediaQuery.of(context).size.height;
     if (MediaQuery.of(context).size.width < 450) {
       maxWidth = MediaQuery.of(context).size.width;
