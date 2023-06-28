@@ -91,6 +91,9 @@ class _InitPageState extends State<InitPage> {
 
   List selectedIngredients = [];
 
+  List physics = [NeverScrollableScrollPhysics(), ClampingScrollPhysics()];
+  int index = 1;
+
   void giveMainSelectedIngredients(List newSelection) {
     setState(() => selectedIngredients = newSelection);
   }
@@ -102,13 +105,16 @@ class _InitPageState extends State<InitPage> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             if (MediaQuery.of(context).size.width > 450) {
-              info_controller = PageController(viewportFraction: 1 / 3);
+              info_controller = PageController(viewportFraction: 1 / 3, initialPage: 1,);
+              index = 0;
             } else {
               info_controller = PageController(
                 initialPage: 1,
               );
             }
-            return (PageView(controller: info_controller, children: [
+            return (PageView(controller: info_controller,
+            physics: physics[index],
+             children: [
               SelectionPage(ingredients: snapshot.data!.ingredients),
               CraftingView(
                 ingredients: snapshot.data!.ingredients,
@@ -130,24 +136,6 @@ class _InitPageState extends State<InitPage> {
         });
   }
 }
-
-// return LayoutBuilder(builder: (context,constraints)){
-//                   if(constraints.maxWidth > 450)
-//                   {
-//                     info_controller = PageController(viewportFraction: 1 / 3);
-//                   }
-//                   else{
-//                     info_controller = PageController(initialPage: 1,);
-//                   }
-//                   return PageView(
-//                         controller: info_controller,
-//                         children: [
-//                           SelectionPage(ingredients: snapshot.data!.ingredients),
-//                           CraftingView(ingredients: snapshot.data!.ingredients),
-//                           RecipePage(title: "recipe")
-//                         ]
-//                       );
-//                 }
 
 Future<AlchemyHolder> fetchAlchemy() async {
   final response = await http.get(Uri.parse('http://10.0.2.2:8000/api/all'));
