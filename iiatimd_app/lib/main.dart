@@ -4,7 +4,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:iiatimd_app/views/crafting.dart';
-import 'package:iiatimd_app/views/ingredients.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../functions/convertNameToPath.dart';
 import '../main.dart' show RecipeStorage;
 
 class RecipePage extends StatefulWidget {
@@ -43,30 +44,30 @@ class _RecipePageState extends State<RecipePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Recipes (infinitescroll)'),
-        ),
-        body: RefreshIndicator(
-          onRefresh: () => refresh(),
-          child: items.isEmpty
-              ? const Center(
-                  child: Text("No Recipes Found"),
-                )
-              : ListView.builder(
-                  itemCount: items.length,
-                  itemBuilder: (context, index) {
-                    if (index < items.length) {
-                      final item = items[index].split(",");
-                      //addFavorite.add(false);
-
-                      return RecipeCard(
-                          name: item[0],
-                          ingredient1: item[1],
-                          ingredient2: item[2],
-                          ingredient3: item[3]);
-                    }
-                  },
-                ),
+        body: DecoratedBox(
+          decoration: const BoxDecoration(color: Colors.black),
+          child: RefreshIndicator(
+            onRefresh: () => refresh(),
+            child: items.isEmpty
+                ? const Center(
+                    child: Text("No Recipes Found"),
+                  )
+                : ListView.builder(
+                    itemCount: items.length,
+                    itemBuilder: (context, index) {
+                      if (index < items.length) {
+                        final item = items[index].split(",");
+                        //addFavorite.add(false);
+        
+                        return RecipeCard(
+                            name: item[0],
+                            ingredient1: item[1],
+                            ingredient2: item[2],
+                            ingredient3: item[3]);
+                      }
+                    },
+                  ),
+          ),
         ));
   }
 }
@@ -106,7 +107,7 @@ class RecipeCard extends StatelessWidget {
                   width: 75,
                   height: 75,
                   color: const Color(0xffE1DBBF),
-                  child: Text(name),
+                  child: Image.asset(convertNameToPath(name)),
                   //image potion
                 ),
               ),
@@ -149,19 +150,19 @@ class RecipeCard extends StatelessWidget {
                           width: 50,
                           height: 50,
                           color: const Color(0xffE1DBBF),
-                          child: Text(ingredient1),
+                          child: Image.asset(convertNameToPath(ingredient1)),
                         ),
                         Container(
                           width: 50,
                           height: 50,
                           color: const Color(0xffE1DBBF),
-                          child: Text(ingredient2),
+                          child: Image.asset(convertNameToPath(ingredient2)),
                         ),
                         Container(
                           width: 50,
                           height: 50,
                           color: const Color(0xffE1DBBF),
-                          child: Text(ingredient3),
+                          child: Image.asset(convertNameToPath(ingredient3)),
                         )
                       ],
                     ),

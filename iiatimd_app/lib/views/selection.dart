@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../functions/convertNameToPath.dart';
 
 class SelectionPage extends StatelessWidget {
   const SelectionPage(
@@ -12,21 +13,21 @@ class SelectionPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Selected'),
-        ),
         body: SizedBox(
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              Expanded(
-                  child: SelectedCards(
-                selectedIngredients: selectedIngredients,
-              )),
-              Expanded(child: FilterContainer(ingredients: ingredients))
-            ],
+          child: DecoratedBox(
+            decoration: const BoxDecoration(color: Color(0xffE1DBBF)),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Expanded(
+                    child: SelectedCards(
+                  selectedIngredients: selectedIngredients,
+                )),
+                Expanded(child: FilterContainer(ingredients: ingredients))
+              ],
+            ),
           ),
         ));
   }
@@ -101,8 +102,8 @@ class ActiveCards extends StatelessWidget {
             Container(
                 width: 75,
                 height: 75,
-                color: Colors.blue,
-                child: const Icon(Icons.add_circle_outline_outlined)),
+                color: Color(0xffE1DBBF),
+                child: Image.asset(convertNameToPath(name))),
             Expanded(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
