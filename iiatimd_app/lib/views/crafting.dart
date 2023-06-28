@@ -56,7 +56,6 @@ class _CraftingViewState extends State<CraftingView>
       }
       for (var localEffect in checkEffects) 
       {
-        debugPrint(localEffect);
         if (effects[0].contains(localEffect) &&
             effects[1].contains(localEffect)) 
         {
@@ -65,7 +64,10 @@ class _CraftingViewState extends State<CraftingView>
         }
       }
       debugPrint(effect);
-      setState(() => potion = widget.recipes[effect]);
+      if(widget.recipes[effect] != null)
+      {
+        setState(() => potion = widget.recipes[effect]);
+      }
     }
   }
 
@@ -302,31 +304,59 @@ class IngredientSlot extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     //To check wether this card is active first checks per ingredient wether its effects match any of the effects of the selected ingredients.
-    List foundMatches = [];
-    for (var chosenIngredient in chosenIngredients) {
-      bool match = false;
-      List effectList = [
-        chosenIngredient["effect1"],
-        chosenIngredient["effect2"],
-        chosenIngredient["effect3"],
-        chosenIngredient["effect4"]
-      ];
-      for (var effect in effectList) {
-        if (effect == ingredient["effect1"] ||
-            effect == ingredient["effect2"] ||
-            effect == ingredient["effect3"] ||
-            effect == ingredient["effect4"]) {
-          match = true;
-        }
+    // List foundMatches = [];
+    // for (var chosenIngredient in chosenIngredients) {
+    //   bool match = false;
+    //   List effectList = [
+    //     chosenIngredient["effect1"],
+    //     chosenIngredient["effect2"],
+    //     chosenIngredient["effect3"],
+    //     chosenIngredient["effect4"]
+    //   ];
+    //   for (var effect in effectList) {
+    //     if (effect == ingredient["effect1"] ||
+    //         effect == ingredient["effect2"] ||
+    //         effect == ingredient["effect3"] ||
+    //         effect == ingredient["effect4"]) {
+    //       match = true;
+    //     }
+    //   }
+    //   foundMatches.add(match);
+    // }
+    // //If any of the selected ingredients do not match sets this card inactive.
+    // if (foundMatches.contains(false) ||
+    //     chosenIngredients.contains(ingredient)) {
+    //   activeColor = Colors.grey;
+    //   isActive = false;
+    // }
+    if(chosenIngredients.length > 0)
+    {
+      List effectLists = [[ingredient["effect1"],ingredient["effect2"],ingredient["effect3"],ingredient["effect4"]],];
+      for(Map entry in chosenIngredients)
+      {
+        effectLists.add([entry["effect1"],entry["effect2"],entry["effect3"],entry["effect4"]]);
       }
-      foundMatches.add(match);
+      List matchingEffects = effectLists[0];
+      for(var i = 1; i<effectLists.length;i++)
+      {
+        List temp = [];
+        for(String effect in effectLists[i])
+        {
+          if(matchingEffects.contains(effect))
+          {
+            temp.add(effect);
+          }
+        }
+        matchingEffects = temp;
+      }
+      
+      if(matchingEffects.length == 0 || chosenIngredients.contains(ingredient))
+      {
+        activeColor = Colors.grey;
+        isActive = false;
+      }
     }
-    //If any of the selected ingredients do not match sets this card inactive.
-    if (foundMatches.contains(false) ||
-        chosenIngredients.contains(ingredient)) {
-      activeColor = Colors.grey;
-      isActive = false;
-    }
+    
 
     return GestureDetector(
       onTap: () {
