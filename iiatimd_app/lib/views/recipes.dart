@@ -21,6 +21,10 @@ class _RecipePageState extends State<RecipePage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    getLocalStorage();
+  }
+
+  getLocalStorage() {
     widget.storage.readRecipes().then((value) {
       setState(() {
         final splitValues = value.split(';');
@@ -31,31 +35,39 @@ class _RecipePageState extends State<RecipePage> {
     });
   }
 
+  Future refresh() async {
+    items.clear();
+    getLocalStorage();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           title: const Text('Recipes (infinitescroll)'),
         ),
-        body: items.isEmpty
-            ? const Center(
-                child: CircularProgressIndicator(),
-              )
-            : ListView.builder(
-                itemCount: items.length,
-                itemBuilder: (context, index) {
-                  if (index < items.length) {
-                    final item = items[index].split(",");
-                    //addFavorite.add(false);
+        body: RefreshIndicator(
+          onRefresh: () => refresh(),
+          child: items.isEmpty
+              ? const Center(
+                  child: Text("No Recipes Found"),
+                )
+              : ListView.builder(
+                  itemCount: items.length,
+                  itemBuilder: (context, index) {
+                    if (index < items.length) {
+                      final item = items[index].split(",");
+                      //addFavorite.add(false);
 
-                    return RecipeCard(
-                        name: item[0],
-                        ingredient1: item[1],
-                        ingredient2: item[2],
-                        ingredient3: item[3]);
-                  }
-                },
-              ));
+                      return RecipeCard(
+                          name: item[0],
+                          ingredient1: item[1],
+                          ingredient2: item[2],
+                          ingredient3: item[3]);
+                    }
+                  },
+                ),
+        ));
   }
 }
 
@@ -94,6 +106,7 @@ class RecipeCard extends StatelessWidget {
                   width: 75,
                   height: 75,
                   color: const Color(0xffE1DBBF),
+                  child: Text(name),
                   //image potion
                 ),
               ),
@@ -107,7 +120,6 @@ class RecipeCard extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            // TEXT
                             name,
                           ),
                           // IconButton(

@@ -1,3 +1,6 @@
+import 'dart:ffi';
+import 'package:path_provider/path_provider.dart';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import '../main.dart' show RecipeStorage;
 
@@ -56,6 +59,12 @@ class _CraftingViewState extends State<CraftingView>
         }
       }
       setState(() => potion = widget.recipes[effect]);
+
+      widget.storage.writeRecipes(
+          potion,
+          chosenIngredients[0]["ingredient"],
+          chosenIngredients[1]["ingredient"],
+          chosenIngredients[2]["ingredient"]);
     }
   }
 
