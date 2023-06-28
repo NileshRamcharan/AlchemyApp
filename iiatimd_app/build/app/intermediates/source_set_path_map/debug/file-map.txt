@@ -10,3 +10,4 @@ com.example.iiatimd_app-rs-8 C:\Users\niles\OneDrive\Documents\GitHub\s1113563_s
 com.example.iiatimd_app-mergeDebugResources-9 C:\Users\niles\OneDrive\Documents\GitHub\s1113563_s1094215_iiatimd_app\iiatimd_app\build\app\intermediates\incremental\debug\mergeDebugResources\merged.dir
 com.example.iiatimd_app-mergeDebugResources-10 C:\Users\niles\OneDrive\Documents\GitHub\s1113563_s1094215_iiatimd_app\iiatimd_app\build\app\intermediates\incremental\debug\mergeDebugResources\stripped.dir
 com.example.iiatimd_app-merged_res-11 C:\Users\niles\OneDrive\Documents\GitHub\s1113563_s1094215_iiatimd_app\iiatimd_app\build\app\intermediates\merged_res\debug
+com.example.iiatimd_app-packaged_res-12 C:\Users\niles\OneDrive\Documents\GitHub\s1113563_s1094215_iiatimd_app\iiatimd_app\build\path_provider_android\intermediates\packaged_res\debug

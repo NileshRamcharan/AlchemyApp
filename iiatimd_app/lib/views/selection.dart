@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 
 class SelectionPage extends StatelessWidget {
-  const SelectionPage({super.key, required this.ingredients});
+  const SelectionPage(
+      {super.key,
+      required this.ingredients,
+      required this.selectedIngredients});
 
   final Map ingredients;
+  final List selectedIngredients;
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +21,10 @@ class SelectionPage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              const Expanded(child: SelectedCards()),
+              Expanded(
+                  child: SelectedCards(
+                selectedIngredients: selectedIngredients,
+              )),
               Expanded(child: FilterContainer(ingredients: ingredients))
             ],
           ),
@@ -27,7 +34,9 @@ class SelectionPage extends StatelessWidget {
 
 //Card for selected ingredients on the main page
 class SelectedCards extends StatefulWidget {
-  const SelectedCards({super.key});
+  const SelectedCards({super.key, required this.selectedIngredients});
+
+  final List selectedIngredients;
 
   @override
   State<SelectedCards> createState() => _SelectedCards();
@@ -41,15 +50,14 @@ class _SelectedCards extends State<SelectedCards> {
     return ListView.builder(
         itemCount: 3,
         itemBuilder: (context, index) {
-          if (index < 3) {
-            //if index = list.length
-            return const ActiveCards(
-                name: "Abecaen longfin",
-                effect1: "Weakness to frost",
-                effect2: "Fortify sneak",
-                effect3: "Weakness to poison",
-                effect4: "Fortify restoration",
-                location: "Collected by catching Abacean Longfin fish.");
+          if (index < widget.selectedIngredients.length) {
+            return ActiveCards(
+                name: widget.selectedIngredients[index]["ingredient"],
+                effect1: widget.selectedIngredients[index]["effect1"],
+                effect2: widget.selectedIngredients[index]["effect2"],
+                effect3: widget.selectedIngredients[index]["effect3"],
+                effect4: widget.selectedIngredients[index]["effect4"],
+                location: widget.selectedIngredients[index]["blurb"]);
           } else {
             return const AddIngredientCard();
           }
