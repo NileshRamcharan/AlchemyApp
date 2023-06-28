@@ -3,6 +3,7 @@ import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import '../main.dart' show RecipeStorage;
+import '../functions/convertNameToPath.dart';
 
 class CraftingView extends StatefulWidget {
   CraftingView(
@@ -55,16 +56,20 @@ class _CraftingViewState extends State<CraftingView>
       for (var localEffect in checkEffects) {
         if (effects[0].contains(localEffect) &&
             effects[1].contains(localEffect)) {
+          debugPrint(localEffect);
           effect = localEffect;
         }
       }
-      setState(() => potion = widget.recipes[effect]);
 
-      widget.storage.writeRecipes(
-          potion,
-          chosenIngredients[0]["ingredient"],
-          chosenIngredients[1]["ingredient"],
-          chosenIngredients[2]["ingredient"]);
+      if (widget.recipes[effect] != null) {
+        setState(() => potion = widget.recipes[effect]);
+
+        widget.storage.writeRecipes(
+            potion,
+            chosenIngredients[0]["ingredient"],
+            chosenIngredients[1]["ingredient"],
+            chosenIngredients[2]["ingredient"]);
+      }
     }
   }
 
@@ -117,22 +122,7 @@ class _CraftingViewState extends State<CraftingView>
                   ingredientList: chosenIngredients,
                   removeFunction: removeIngredient,
                 ),
-                Center(
-                  child: SizedBox(
-                    width: 70,
-                    height: 70,
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                        color: Color(0xffE1DBBF),
-                      ),
-                      child: Center(
-                          child: Text(
-                        potion,
-                        textAlign: TextAlign.center,
-                      )),
-                    ),
-                  ),
-                ),
+                PotionImageSlot(potion: potion),
                 CraftButton(craftPotion: craftPotion),
               ],
             ),
@@ -156,6 +146,43 @@ class _CraftingViewState extends State<CraftingView>
 
   @override
   bool get wantKeepAlive => true;
+}
+
+class PotionImageSlot extends StatelessWidget {
+  const PotionImageSlot({super.key, required this.potion});
+
+  final String potion;
+
+  @override
+  Widget build(BuildContext context) {
+    if (potion.length > 0) {
+      return Center(
+          child: SizedBox(
+        width: 70,
+        height: 70,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: Color(0xffE1DBBF),
+          ),
+          child: Center(
+            child: Image.asset(convertNameToPath(potion)),
+          ),
+        ),
+      ));
+    } else {
+      return Center(
+        child: SizedBox(
+          width: 70,
+          height: 70,
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              color: Color(0xffE1DBBF),
+            ),
+          ),
+        ),
+      );
+    }
+  }
 }
 
 class craftSlotHolder extends StatelessWidget {
@@ -215,10 +242,12 @@ class SelectionSlot extends StatelessWidget {
         child: DecoratedBox(
           decoration: const BoxDecoration(color: Color(0xffE1DBBF)),
           child: Center(
-              child: Text(
-            ingredient["ingredient"],
-            textAlign: TextAlign.center,
-          )),
+            child: Image.asset(convertNameToPath(ingredient["ingredient"])),
+            //     Text(
+            //   ingredient["ingredient"],
+            //   textAlign: TextAlign.center,
+            // )
+          ),
         ),
       ),
     );
@@ -268,35 +297,69 @@ class IngredientSlot extends StatelessWidget {
   final Function addFunction;
 
   bool isActive = true;
-  Color activeColor = Colors.black;
+  Color activeColor = Colors.white;
 
   @override
   Widget build(BuildContext context) {
     //To check wether this card is active first checks per ingredient wether its effects match any of the effects of the selected ingredients.
-    List foundMatches = [];
-    for (var chosenIngredient in chosenIngredients) {
-      bool match = false;
-      List effectList = [
-        chosenIngredient["effect1"],
-        chosenIngredient["effect2"],
-        chosenIngredient["effect3"],
-        chosenIngredient["effect4"]
+    // List foundMatches = [];
+    // for (var chosenIngredient in chosenIngredients) {
+    //   bool match = false;
+    //   List effectList = [
+    //     chosenIngredient["effect1"],
+    //     chosenIngredient["effect2"],
+    //     chosenIngredient["effect3"],
+    //     chosenIngredient["effect4"]
+    //   ];
+    //   for (var effect in effectList) {
+    //     if (effect == ingredient["effect1"] ||
+    //         effect == ingredient["effect2"] ||
+    //         effect == ingredient["effect3"] ||
+    //         effect == ingredient["effect4"]) {
+    //       match = true;
+    //     }
+    //   }
+    //   foundMatches.add(match);
+    // }
+    // //If any of the selected ingredients do not match sets this card inactive.
+    // if (foundMatches.contains(false) ||
+    //     chosenIngredients.contains(ingredient)) {
+    //   activeColor = Colors.grey;
+    //   isActive = false;
+    // }
+    if (chosenIngredients.length > 0) {
+      List effectLists = [
+        [
+          ingredient["effect1"],
+          ingredient["effect2"],
+          ingredient["effect3"],
+          ingredient["effect4"]
+        ],
       ];
-      for (var effect in effectList) {
-        if (effect == ingredient["effect1"] ||
-            effect == ingredient["effect2"] ||
-            effect == ingredient["effect3"] ||
-            effect == ingredient["effect4"]) {
-          match = true;
-        }
+      for (Map entry in chosenIngredients) {
+        effectLists.add([
+          entry["effect1"],
+          entry["effect2"],
+          entry["effect3"],
+          entry["effect4"]
+        ]);
       }
-      foundMatches.add(match);
-    }
-    //If any of the selected ingredients do not match sets this card inactive.
-    if (foundMatches.contains(false) ||
-        chosenIngredients.contains(ingredient)) {
-      activeColor = Colors.grey;
-      isActive = false;
+      List matchingEffects = effectLists[0];
+      for (var i = 1; i < effectLists.length; i++) {
+        List temp = [];
+        for (String effect in effectLists[i]) {
+          if (matchingEffects.contains(effect)) {
+            temp.add(effect);
+          }
+        }
+        matchingEffects = temp;
+      }
+
+      if (matchingEffects.length == 0 ||
+          chosenIngredients.contains(ingredient)) {
+        activeColor = Colors.grey;
+        isActive = false;
+      }
     }
 
     return GestureDetector(
@@ -308,11 +371,12 @@ class IngredientSlot extends StatelessWidget {
       child: DecoratedBox(
         decoration: BoxDecoration(color: activeColor),
         child: Center(
-            child: Text(
-          ingredient["ingredient"],
-          style: const TextStyle(color: Colors.white),
-          textAlign: TextAlign.center,
-        )),
+          child: Image.asset(convertNameToPath(ingredient["ingredient"])),
+          //   Text(
+          // ingredient["ingredient"],
+          // style: const TextStyle(color: Colors.white),
+          // textAlign: TextAlign.center,
+        ),
       ),
     );
   }

@@ -91,6 +91,9 @@ class _InitPageState extends State<InitPage> {
 
   List selectedIngredients = [];
 
+  List physics = [NeverScrollableScrollPhysics(), ClampingScrollPhysics()];
+  int index = 1;
+
   void giveMainSelectedIngredients(List newSelection) {
     setState(() => selectedIngredients = newSelection);
   }
@@ -102,28 +105,35 @@ class _InitPageState extends State<InitPage> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             if (MediaQuery.of(context).size.width > 450) {
-              info_controller = PageController(viewportFraction: 1 / 3);
+              info_controller = PageController(
+                viewportFraction: 1 / 3,
+                initialPage: 1,
+              );
+              index = 0;
             } else {
               info_controller = PageController(
                 initialPage: 1,
               );
             }
-            return (PageView(controller: info_controller, children: [
-              SelectionPage(
-                ingredients: snapshot.data!.ingredients,
-                selectedIngredients: selectedIngredients,
-              ),
-              CraftingView(
-                ingredients: snapshot.data!.ingredients,
-                giveMainSelectedIngredients: giveMainSelectedIngredients,
-                recipes: snapshot.data!.recipes,
-                storage: RecipeStorage(),
-              ),
-              RecipePage(
-                ingredients: snapshot.data!.ingredients,
-                storage: RecipeStorage(),
-              )
-            ]));
+            return (PageView(
+                controller: info_controller,
+                physics: physics[index],
+                children: [
+                  SelectionPage(
+                    ingredients: snapshot.data!.ingredients,
+                    selectedIngredients: selectedIngredients,
+                  ),
+                  CraftingView(
+                    ingredients: snapshot.data!.ingredients,
+                    giveMainSelectedIngredients: giveMainSelectedIngredients,
+                    recipes: snapshot.data!.recipes,
+                    storage: RecipeStorage(),
+                  ),
+                  RecipePage(
+                    ingredients: snapshot.data!.ingredients,
+                    storage: RecipeStorage(),
+                  )
+                ]));
           } else if (snapshot.hasError) {
             return Text('${snapshot.error}');
           }
