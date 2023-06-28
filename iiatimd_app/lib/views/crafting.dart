@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import '../main.dart' show RecipeStorage;
+import '../functions/convertNameToPath.dart';
 
 class CraftingView extends StatefulWidget {
   CraftingView(
@@ -53,12 +54,17 @@ class _CraftingViewState extends State<CraftingView>
           chosenIngredients[i]["effect4"]
         ]);
       }
-      for (var localEffect in checkEffects) {
+      for (var localEffect in checkEffects) 
+      {
+        debugPrint(localEffect);
         if (effects[0].contains(localEffect) &&
-            effects[1].contains(localEffect)) {
+            effects[1].contains(localEffect)) 
+        {
+          debugPrint(localEffect);
           effect = localEffect;
         }
       }
+      debugPrint(effect);
       setState(() => potion = widget.recipes[effect]);
     }
   }
@@ -111,22 +117,7 @@ class _CraftingViewState extends State<CraftingView>
                   ingredientList: chosenIngredients,
                   removeFunction: removeIngredient,
                 ),
-                Center(
-                  child: SizedBox(
-                    width: 70,
-                    height: 70,
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                        color: Color(0xffE1DBBF),
-                      ),
-                      child: Center(
-                          child: Text(
-                        potion,
-                        textAlign: TextAlign.center,
-                      )),
-                    ),
-                  ),
-                ),
+                PotionImageSlot(potion:potion),
                 CraftButton(craftPotion: craftPotion),
               ],
             ),
@@ -150,6 +141,48 @@ class _CraftingViewState extends State<CraftingView>
 
   @override
   bool get wantKeepAlive => true;
+}
+
+class PotionImageSlot extends StatelessWidget {
+  const PotionImageSlot({super.key, required this.potion});
+
+  final String potion;
+
+  @override
+  Widget build(BuildContext context) {
+    if(potion.length> 0)
+    {
+      return Center(
+      child: SizedBox(
+      width: 70,
+      height: 70,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: Color(0xffE1DBBF),
+        ),
+        child: Center(
+        child: Image.asset(convertNameToPath(potion)
+        ),
+      ),
+    ),
+    ));
+    }
+    else
+    {
+      return  Center(
+      child: SizedBox(
+      width: 70,
+      height: 70,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: Color(0xffE1DBBF),
+        ),
+      ),
+    ),
+    );
+    }
+    
+  }
 }
 
 class craftSlotHolder extends StatelessWidget {
@@ -209,10 +242,12 @@ class SelectionSlot extends StatelessWidget {
         child: DecoratedBox(
           decoration: const BoxDecoration(color: Color(0xffE1DBBF)),
           child: Center(
-              child: Text(
-            ingredient["ingredient"],
-            textAlign: TextAlign.center,
-          )),
+              child: Image.asset(convertNameToPath(ingredient["ingredient"])),
+          //     Text(
+          //   ingredient["ingredient"],
+          //   textAlign: TextAlign.center,
+          // )
+          ),
         ),
       ),
     );
@@ -262,7 +297,7 @@ class IngredientSlot extends StatelessWidget {
   final Function addFunction;
 
   bool isActive = true;
-  Color activeColor = Colors.black;
+  Color activeColor = Colors.white;
 
   @override
   Widget build(BuildContext context) {
@@ -302,11 +337,16 @@ class IngredientSlot extends StatelessWidget {
       child: DecoratedBox(
         decoration: BoxDecoration(color: activeColor),
         child: Center(
-            child: Text(
-          ingredient["ingredient"],
-          style: const TextStyle(color: Colors.white),
-          textAlign: TextAlign.center,
-        )),
+            child: Image.asset(convertNameToPath(ingredient["ingredient"])),
+          //   Text(
+          // ingredient["ingredient"],
+          // style: const TextStyle(color: Colors.white),
+          // textAlign: TextAlign.center,
+
+            
+            
+          
+        ),
       ),
     );
   }
