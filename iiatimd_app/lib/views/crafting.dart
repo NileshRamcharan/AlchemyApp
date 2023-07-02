@@ -448,7 +448,7 @@ class ListChoice extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: MediaQuery.of(context).size.height / 2,
+      //height: MediaQuery.of(context).size.height / 2,
       child: GridView.count(
         padding: const EdgeInsets.all(10),
         crossAxisSpacing: 20,
@@ -494,11 +494,13 @@ class _FilterContainerState extends State<FilterContainer> {
     return Column(
       children: [
         Filter(state: state, onChangeState: onchangeState),
-        ListChoice(
-            state: state,
-            ingredients: widget.ingredients,
-            chosenIngredients: widget.chosenIngredients,
-            addFunction: widget.addFunction)
+        Expanded(
+          child: ListChoice(
+              state: state,
+              ingredients: widget.ingredients,
+              chosenIngredients: widget.chosenIngredients,
+              addFunction: widget.addFunction),
+        )
       ],
     );
   }

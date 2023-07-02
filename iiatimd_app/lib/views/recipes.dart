@@ -45,31 +45,33 @@ class _RecipePageState extends State<RecipePage> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: DecoratedBox(
-          decoration: const BoxDecoration(color: Colors.black),
-          child: RefreshIndicator(
-            onRefresh: () => refresh(),
-            child: items.isEmpty
-                ?  ListView(
-                    children: [Text("No Recipes Found",style: const TextStyle(color: Colors.white),
-                  textAlign: TextAlign.center,),],
-                  )
-                : ListView.builder(
-                    itemCount: items.length,
-                    itemBuilder: (context, index) {
-                      if (index < items.length) {
-                        final item = items[index].split(",");
-                        //addFavorite.add(false);
-        
-                        return RecipeCard(
-                            name: item[0],
-                            ingredient1: item[1],
-                            ingredient2: item[2],
-                            ingredient3: item[3]);
-                      }
-                    },
-                  ),
-          ),
-        ));
+      decoration: const BoxDecoration(color: Colors.black),
+      child: RefreshIndicator(
+        onRefresh: () => refresh(),
+        child: items.isEmpty
+            ? const Center(
+                child: Text(
+                  "No Recipes Found",
+                  style: TextStyle(color: Colors.white),
+                ),
+              )
+            : ListView.builder(
+                itemCount: items.length,
+                itemBuilder: (context, index) {
+                  if (index < items.length) {
+                    final item = items[index].split(",");
+                    //addFavorite.add(false);
+
+                    return RecipeCard(
+                        name: item[0],
+                        ingredient1: item[1],
+                        ingredient2: item[2],
+                        ingredient3: item[3]);
+                  }
+                },
+              ),
+      ),
+    ));
   }
 }
 
