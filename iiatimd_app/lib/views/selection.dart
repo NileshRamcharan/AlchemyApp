@@ -223,8 +223,7 @@ class Filter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    return Wrap(
       children: [
         FilterButton(name: "Mushrooms", onChangeState: onChangeState),
         FilterButton(name: "Plants", onChangeState: onChangeState),
@@ -274,7 +273,7 @@ class ListChoice extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: MediaQuery.of(context).size.height / 2.5,
+      height: (MediaQuery.of(context).size.height / 2.5)-9,
       child: ListView.builder(
           scrollDirection: Axis.vertical,
           shrinkWrap: true,
