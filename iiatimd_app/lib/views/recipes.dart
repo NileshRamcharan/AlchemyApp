@@ -46,12 +46,13 @@ class _RecipePageState extends State<RecipePage> {
       child: RefreshIndicator(
         onRefresh: () => refresh(),
         child: items.isEmpty
-            ? const Center(
-                child: Text(
+            ? ListView(children: const [
+                Text(
                   "No Recipes Found",
                   style: TextStyle(color: Colors.white),
+                  textAlign: TextAlign.center,
                 ),
-              )
+              ])
             : ListView.builder(
                 itemCount: items.length,
                 itemBuilder: (context, index) {
