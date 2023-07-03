@@ -243,10 +243,6 @@ class SelectionSlot extends StatelessWidget {
           decoration: const BoxDecoration(color: Color(0xffE1DBBF)),
           child: Center(
             child: Image.asset(convertNameToPath(ingredient["ingredient"])),
-            //     Text(
-            //   ingredient["ingredient"],
-            //   textAlign: TextAlign.center,
-            // )
           ),
         ),
       ),
@@ -301,32 +297,6 @@ class IngredientSlot extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //To check wether this card is active first checks per ingredient wether its effects match any of the effects of the selected ingredients.
-    // List foundMatches = [];
-    // for (var chosenIngredient in chosenIngredients) {
-    //   bool match = false;
-    //   List effectList = [
-    //     chosenIngredient["effect1"],
-    //     chosenIngredient["effect2"],
-    //     chosenIngredient["effect3"],
-    //     chosenIngredient["effect4"]
-    //   ];
-    //   for (var effect in effectList) {
-    //     if (effect == ingredient["effect1"] ||
-    //         effect == ingredient["effect2"] ||
-    //         effect == ingredient["effect3"] ||
-    //         effect == ingredient["effect4"]) {
-    //       match = true;
-    //     }
-    //   }
-    //   foundMatches.add(match);
-    // }
-    // //If any of the selected ingredients do not match sets this card inactive.
-    // if (foundMatches.contains(false) ||
-    //     chosenIngredients.contains(ingredient)) {
-    //   activeColor = Colors.grey;
-    //   isActive = false;
-    // }
     if (chosenIngredients.length > 0) {
       List effectLists = [
         [
@@ -372,10 +342,6 @@ class IngredientSlot extends StatelessWidget {
         decoration: BoxDecoration(color: activeColor),
         child: Center(
           child: Image.asset(convertNameToPath(ingredient["ingredient"])),
-          //   Text(
-          // ingredient["ingredient"],
-          // style: const TextStyle(color: Colors.white),
-          // textAlign: TextAlign.center,
         ),
       ),
     );
@@ -415,7 +381,7 @@ class FilterButton extends StatelessWidget {
     return GestureDetector(
         onTap: () {
           onChangeState(name);
-        }, // Image tapped
+        },
         child: Padding(
           padding: const EdgeInsets.all(3.0),
           child: Container(

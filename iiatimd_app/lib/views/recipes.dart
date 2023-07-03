@@ -16,8 +16,6 @@ class RecipePage extends StatefulWidget {
 class _RecipePageState extends State<RecipePage> {
   List<String> items = [];
 
-  //List<bool> addFavorite = [];
-
   @override
   void initState() {
     // TODO: implement initState
@@ -124,23 +122,6 @@ class RecipeCard extends StatelessWidget {
                           Text(
                             name,
                           ),
-                          // IconButton(
-                          //   icon: addFavorite.elementAt(index)
-                          //       ? const Icon(
-                          //           Icons.star,
-                          //         )
-                          //       : const Icon(
-                          //           Icons.star_border_outlined,
-                          //         ),
-                          //   onPressed: () {
-                          //     setState(() {
-                          //       addFavorite[index] =
-                          //           !addFavorite
-                          //               .elementAt(index);
-                          //     });
-                          //print(addFavorite);
-                          //},
-                          //),
                         ],
                       ),
                     ),

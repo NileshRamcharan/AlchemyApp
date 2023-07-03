@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:iiatimd_app/views/crafting.dart';
 
 import 'package:http/http.dart' as http;
@@ -144,17 +145,8 @@ class _InitPageState extends State<InitPage> {
 }
 
 Future<AlchemyHolder> fetchAlchemy() async {
-  final response = await http.get(Uri.parse('http://10.0.2.2:8000/api/all'));
-  if (response.statusCode == 200) {
-    // If the server did return a 200 OK response,
-    // then parse the JSON.
-
-    return AlchemyHolder.fromJson(jsonDecode(response.body));
-  } else {
-    // If the server did not return a 200 OK response,
-    // then throw an exception.
-    throw Exception('Failed to load album');
-  }
+  final String response = await rootBundle.loadString('information/apiContent.json');
+  return AlchemyHolder.fromJson(jsonDecode(response));
 }
 
 class AlchemyHolder {
