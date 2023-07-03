@@ -1,11 +1,12 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 import 'package:flutter/material.dart';
 import 'package:iiatimd_app/views/crafting.dart';
 
-import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'package:iiatimd_app/views/recipes.dart';
 import 'package:iiatimd_app/views/selection.dart';
@@ -144,17 +145,19 @@ class _InitPageState extends State<InitPage> {
 }
 
 Future<AlchemyHolder> fetchAlchemy() async {
-  final response = await http.get(Uri.parse('http://10.0.2.2:8000/api/all'));
-  if (response.statusCode == 200) {
-    // If the server did return a 200 OK response,
-    // then parse the JSON.
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
-    return AlchemyHolder.fromJson(jsonDecode(response.body));
-  } else {
-    // If the server did not return a 200 OK response,
-    // then throw an exception.
-    throw Exception('Failed to load album');
-  }
+  final firebase = FirebaseFirestore.instance.collection("alchemy");
+  final ingredients = firebase.doc("ingredients");
+  final recipes = firebase.doc("potions");
+  DocumentSnapshot ing = await ingredients.get();
+  DocumentSnapshot rec = await recipes.get();
+  final mapIngredients = ing.data() as Map<String, dynamic>;
+  final mapRecipes = rec.data() as Map<String, dynamic>;
+
+  return AlchemyHolder(ingredients: mapIngredients, recipes: mapRecipes);
 }
 
 class AlchemyHolder {

@@ -14,22 +14,22 @@ class SelectionPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         body: SizedBox(
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height,
-          child: DecoratedBox(
-            decoration: const BoxDecoration(color: Color(0xffE1DBBF)),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                Expanded(
-                    child: SelectedCards(
-                  selectedIngredients: selectedIngredients,
-                )),
-                Expanded(child: FilterContainer(ingredients: ingredients))
-              ],
-            ),
-          ),
-        ));
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height,
+      child: DecoratedBox(
+        decoration: const BoxDecoration(color: Color(0xffE1DBBF)),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Expanded(
+                child: SelectedCards(
+              selectedIngredients: selectedIngredients,
+            )),
+            Expanded(child: FilterContainer(ingredients: ingredients))
+          ],
+        ),
+      ),
+    ));
   }
 }
 
@@ -44,8 +44,6 @@ class SelectedCards extends StatefulWidget {
 }
 
 class _SelectedCards extends State<SelectedCards> {
-  //get state of active ingredients
-
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
@@ -111,7 +109,7 @@ class ActiveCards extends StatelessWidget {
                   Container(
                       padding: const EdgeInsets.fromLTRB(5, 0, 5, 5),
                       child: Text(
-                        name, //list.item.title
+                        name,
                         style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,

@@ -1,12 +1,9 @@
-import 'dart:ffi';
-import 'package:path_provider/path_provider.dart';
-import 'dart:io';
 import 'package:flutter/material.dart';
 import '../main.dart' show RecipeStorage;
 import '../functions/convertNameToPath.dart';
 
 class CraftingView extends StatefulWidget {
-  CraftingView(
+  const CraftingView(
       {super.key,
       required this.ingredients,
       required this.giveMainSelectedIngredients,
@@ -111,9 +108,9 @@ class _CraftingViewState extends State<CraftingView>
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Text(
+                const Text(
                   "Alchemy",
-                  style: const TextStyle(
+                  style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                       color: Colors.white),
@@ -155,13 +152,13 @@ class PotionImageSlot extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (potion.length > 0) {
+    if (potion.isNotEmpty) {
       return Center(
           child: SizedBox(
         width: 70,
         height: 70,
         child: DecoratedBox(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             color: Color(0xffE1DBBF),
           ),
           child: Center(
@@ -170,7 +167,7 @@ class PotionImageSlot extends StatelessWidget {
         ),
       ));
     } else {
-      return Center(
+      return const Center(
         child: SizedBox(
           width: 70,
           height: 70,
@@ -203,7 +200,7 @@ class craftSlotHolder extends StatelessWidget {
             removeFunction: removeFunction,
           ),
         for (var i = 0; i < 3 - ingredientList.length; i++)
-          SelectionSlotEmpty(),
+          const SelectionSlotEmpty(),
       ],
     );
   }
@@ -225,7 +222,8 @@ class SelectionSlotEmpty extends StatelessWidget {
 }
 
 class SelectionSlot extends StatelessWidget {
-  SelectionSlot({super.key, this.ingredient, required this.removeFunction});
+  const SelectionSlot(
+      {super.key, this.ingredient, required this.removeFunction});
 
   final ingredient;
   final Function removeFunction;
@@ -273,11 +271,11 @@ class CraftButton extends StatelessWidget {
                   color: Color(0xFF006989),
                   border: Border.all(color: Colors.white),
                   borderRadius: BorderRadius.all(Radius.circular(7))),
-              child: Padding(
-                padding: const EdgeInsets.all(3.5),
+              child: const Padding(
+                padding: EdgeInsets.all(3.5),
                 child: Text(
                   "Craft",
-                  style: const TextStyle(color: Colors.white),
+                  style: TextStyle(color: Colors.white),
                   textAlign: TextAlign.center,
                 ),
               )),
@@ -301,32 +299,6 @@ class IngredientSlot extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //To check wether this card is active first checks per ingredient wether its effects match any of the effects of the selected ingredients.
-    // List foundMatches = [];
-    // for (var chosenIngredient in chosenIngredients) {
-    //   bool match = false;
-    //   List effectList = [
-    //     chosenIngredient["effect1"],
-    //     chosenIngredient["effect2"],
-    //     chosenIngredient["effect3"],
-    //     chosenIngredient["effect4"]
-    //   ];
-    //   for (var effect in effectList) {
-    //     if (effect == ingredient["effect1"] ||
-    //         effect == ingredient["effect2"] ||
-    //         effect == ingredient["effect3"] ||
-    //         effect == ingredient["effect4"]) {
-    //       match = true;
-    //     }
-    //   }
-    //   foundMatches.add(match);
-    // }
-    // //If any of the selected ingredients do not match sets this card inactive.
-    // if (foundMatches.contains(false) ||
-    //     chosenIngredients.contains(ingredient)) {
-    //   activeColor = Colors.grey;
-    //   isActive = false;
-    // }
     if (chosenIngredients.length > 0) {
       List effectLists = [
         [
@@ -372,10 +344,6 @@ class IngredientSlot extends StatelessWidget {
         decoration: BoxDecoration(color: activeColor),
         child: Center(
           child: Image.asset(convertNameToPath(ingredient["ingredient"])),
-          //   Text(
-          // ingredient["ingredient"],
-          // style: const TextStyle(color: Colors.white),
-          // textAlign: TextAlign.center,
         ),
       ),
     );
@@ -448,7 +416,6 @@ class ListChoice extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      //height: MediaQuery.of(context).size.height / 2,
       child: GridView.count(
         padding: const EdgeInsets.all(10),
         crossAxisSpacing: 20,
